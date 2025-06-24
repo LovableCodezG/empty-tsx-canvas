@@ -1,9 +1,18 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Hotel } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { cn } from '@/lib/utils';
 import { useTripCreation } from '@/contexts/TripCreationContext';
 import TripCreationCloseButton from '@/components/trip-creation/TripCreationCloseButton';
@@ -28,6 +37,7 @@ const ScheduleBuilderContent = () => {
   const { state } = useTripCreation();
   const [selectedDay, setSelectedDay] = useState(0);
   const [isAccommodationModalOpen, setIsAccommodationModalOpen] = useState(false);
+  const [showValidationDialog, setShowValidationDialog] = useState(false);
   const [activities, setActivities] = useState<Record<number, Activity[]>>({});
 
   // Check if dates are properly set, redirect to destination page if not
@@ -43,10 +53,62 @@ const ScheduleBuilderContent = () => {
     }
   }, [state.dateType, state.startDate, state.dateRange, navigate]);
 
+  // Validate if user has added meaningful activities
+  const validateScheduleActivities = () => {
+    let meaningfulActivitiesCount = 0;
+    
+    // Check all days
+    Object.values(activities).forEach(dayActivities => {
+      if (dayActivities) {
+        dayActivities.forEach(activity => {
+          // Skip accommodation activities (check-in/check-out)
+          if (activity.category === 'accommodation') {
+            return;
+          }
+          
+          // Skip breakfast activities
+          if (activity.category === 'meal' && 
+              activity.name.toLowerCase().includes('breakfast')) {
+            return;
+          }
+          
+          // Count all other activities as meaningful
+          meaningfulActivitiesCount++;
+        });
+      }
+    });
+    
+    return meaningfulActivitiesCount > 0;
+  };
+
   const handleNext = () => {
-    // Navigate to expense estimation page (placeholder for now)
+    console.log('Checking schedule validation before proceeding');
+    
+    // Validate if user has added meaningful activities
+    const hasMeaningfulActivities = validateScheduleActivities();
+    
+    if (!hasMeaningfulActivities) {
+      console.log('No meaningful activities found, showing validation dialog');
+      setShowValidationDialog(true);
+      return;
+    }
+    
+    // Navigate to expense estimation page
     console.log('Proceeding to expense estimation');
     // navigate('/create-trip/expenses');
+  };
+
+  const handleContinueAnyway = () => {
+    console.log('User chose to continue without adding places');
+    setShowValidationDialog(false);
+    // Navigate to expense estimation page
+    // navigate('/create-trip/expenses');
+  };
+
+  const handleGoBackToAddPlaces = () => {
+    console.log('User chose to go back and add places');
+    setShowValidationDialog(false);
+    // Dialog closes, user stays on current page
   };
 
   const handleAddActivity = (activity: Omit<Activity, 'id'>, targetDay?: number) => {
@@ -155,6 +217,26 @@ const ScheduleBuilderContent = () => {
         selectedDay={selectedDay}
         onAddActivity={handleAddActivity}
       />
+
+      {/* Schedule Validation Alert Dialog */}
+      <AlertDialog open={showValidationDialog} onOpenChange={setShowValidationDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>No Places Added</AlertDialogTitle>
+            <AlertDialogDescription>
+              You haven't added any places to visit. Do you still want to continue?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleGoBackToAddPlaces}>
+              Go Back to Add Places
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleContinueAnyway}>
+              Yes, Continue
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
