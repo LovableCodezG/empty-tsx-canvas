@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, MapPin, Utensils } from 'lucide-react';
@@ -6,11 +7,21 @@ import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import PlaceSuggestionCard from './PlaceSuggestionCard';
 
-interface SuggestionsPanelProps {
-  selectedDay: number;
+interface Activity {
+  id: string;
+  name: string;
+  startTime: string;
+  duration: number;
+  category: 'meal' | 'sightseeing' | 'transportation' | 'accommodation' | 'other';
+  notes?: string;
 }
 
-const SuggestionsPanel = ({ selectedDay }: SuggestionsPanelProps) => {
+interface SuggestionsPanelProps {
+  selectedDay: number;
+  onAddActivity: (activity: Omit<Activity, 'id'>) => void;
+}
+
+const SuggestionsPanel = ({ selectedDay, onAddActivity }: SuggestionsPanelProps) => {
   const [activeTab, setActiveTab] = useState<'places' | 'restaurants'>('places');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -107,7 +118,6 @@ const SuggestionsPanel = ({ selectedDay }: SuggestionsPanelProps) => {
         </Button>
       </div>
 
-      {/* Search Bar */}
       <div className="relative mb-4">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
         <Input
@@ -125,6 +135,7 @@ const SuggestionsPanel = ({ selectedDay }: SuggestionsPanelProps) => {
             key={place.id}
             place={place}
             selectedDay={selectedDay}
+            onAddActivity={onAddActivity}
           />
         ))}
         

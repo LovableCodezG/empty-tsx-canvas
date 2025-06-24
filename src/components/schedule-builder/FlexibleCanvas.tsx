@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import ActivityBlock from './ActivityBlock';
 import ActivityModal from './ActivityModal';
@@ -14,9 +13,10 @@ interface Activity {
 
 interface FlexibleCanvasProps {
   selectedDay: number;
+  onAddActivity: (activity: Omit<Activity, 'id'>) => void;
 }
 
-const FlexibleCanvas = ({ selectedDay }: FlexibleCanvasProps) => {
+const FlexibleCanvas = ({ selectedDay, onAddActivity }: FlexibleCanvasProps) => {
   const [activities, setActivities] = useState<Record<number, Activity[]>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
@@ -65,6 +65,28 @@ const FlexibleCanvas = ({ selectedDay }: FlexibleCanvasProps) => {
     });
   };
 
+  // Handle activity addition from TimePicker
+  const handleAddActivityFromPicker = (activityData: Omit<Activity, 'id'>) => {
+    const newActivity: Activity = {
+      ...activityData,
+      id: Date.now().toString()
+    };
+
+    setActivities(prev => {
+      const dayActivities = prev[selectedDay] || [];
+      return { ...prev, [selectedDay]: [...dayActivities, newActivity] };
+    });
+  };
+
+  // Use the external onAddActivity prop
+  React.useEffect(() => {
+    if (onAddActivity) {
+      // Replace the prop function with our internal handler
+      const originalOnAddActivity = onAddActivity;
+      onAddActivity = handleAddActivityFromPicker;
+    }
+  }, [onAddActivity]);
+
   const handleEditActivity = (activity: Activity) => {
     setEditingActivity(activity);
     setIsModalOpen(true);
@@ -77,6 +99,13 @@ const FlexibleCanvas = ({ selectedDay }: FlexibleCanvasProps) => {
       return { ...prev, [selectedDay]: updatedActivities };
     });
   };
+
+  // Expose the addActivity function to parent components
+  React.useEffect(() => {
+    if (onAddActivity !== handleAddActivityFromPicker) {
+      onAddActivity = handleAddActivityFromPicker;
+    }
+  }, [selectedDay]);
 
   const timeMarkers = generateTimeMarkers();
   const dayActivities = activities[selectedDay] || [];

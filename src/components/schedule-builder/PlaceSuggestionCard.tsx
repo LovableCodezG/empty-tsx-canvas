@@ -14,12 +14,22 @@ interface Place {
   type: string;
 }
 
+interface Activity {
+  id: string;
+  name: string;
+  startTime: string;
+  duration: number;
+  category: 'meal' | 'sightseeing' | 'transportation' | 'accommodation' | 'other';
+  notes?: string;
+}
+
 interface PlaceSuggestionCardProps {
   place: Place;
   selectedDay: number;
+  onAddActivity: (activity: Omit<Activity, 'id'>) => void;
 }
 
-const PlaceSuggestionCard = ({ place, selectedDay }: PlaceSuggestionCardProps) => {
+const PlaceSuggestionCard = ({ place, selectedDay, onAddActivity }: PlaceSuggestionCardProps) => {
   const [showTimePicker, setShowTimePicker] = useState(false);
 
   const handleCardClick = () => {
@@ -60,6 +70,7 @@ const PlaceSuggestionCard = ({ place, selectedDay }: PlaceSuggestionCardProps) =
         onClose={() => setShowTimePicker(false)}
         place={place}
         selectedDay={selectedDay}
+        onAddActivity={onAddActivity}
       />
     </>
   );

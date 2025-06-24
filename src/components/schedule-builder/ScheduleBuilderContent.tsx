@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Hotel } from 'lucide-react';
@@ -13,11 +12,21 @@ import SuggestionsPanel from './SuggestionsPanel';
 import ScheduleGrid from './ScheduleGrid';
 import AccommodationModal from './AccommodationModal';
 
+interface Activity {
+  id: string;
+  name: string;
+  startTime: string;
+  duration: number;
+  category: 'meal' | 'sightseeing' | 'transportation' | 'accommodation' | 'other';
+  notes?: string;
+}
+
 const ScheduleBuilderContent = () => {
   const navigate = useNavigate();
   const { state } = useTripCreation();
   const [selectedDay, setSelectedDay] = useState(0);
   const [isAccommodationModalOpen, setIsAccommodationModalOpen] = useState(false);
+  const addActivityRef = useRef<((activity: Omit<Activity, 'id'>) => void) | null>(null);
 
   // Check if dates are properly set, redirect to destination page if not
   useEffect(() => {
@@ -36,6 +45,12 @@ const ScheduleBuilderContent = () => {
     // Navigate to expense estimation page (placeholder for now)
     console.log('Proceeding to expense estimation');
     // navigate('/create-trip/expenses');
+  };
+
+  const handleAddActivity = (activity: Omit<Activity, 'id'>) => {
+    if (addActivityRef.current) {
+      addActivityRef.current(activity);
+    }
   };
 
   // Early return if no valid dates (while redirect is happening)
@@ -60,8 +75,11 @@ const ScheduleBuilderContent = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <SuggestionsPanel selectedDay={selectedDay} />
-          <ScheduleGrid selectedDay={selectedDay} />
+          <SuggestionsPanel selectedDay={selectedDay} onAddActivity={handleAddActivity} />
+          <ScheduleGrid 
+            selectedDay={selectedDay} 
+            onAddActivity={(callback) => { addActivityRef.current = callback; return callback; }}
+          />
         </div>
 
         {/* Floating Action Buttons */}

@@ -19,14 +19,24 @@ interface Place {
   type: string;
 }
 
+interface Activity {
+  id: string;
+  name: string;
+  startTime: string;
+  duration: number;
+  category: 'meal' | 'sightseeing' | 'transportation' | 'accommodation' | 'other';
+  notes?: string;
+}
+
 interface TimePickerProps {
   isOpen: boolean;
   onClose: () => void;
   place: Place;
   selectedDay: number;
+  onAddActivity: (activity: Omit<Activity, 'id'>) => void;
 }
 
-const TimePicker = ({ isOpen, onClose, place, selectedDay }: TimePickerProps) => {
+const TimePicker = ({ isOpen, onClose, place, selectedDay, onAddActivity }: TimePickerProps) => {
   // Convert 9 AM to 5 PM as default range (in minutes from midnight)
   const [timeRange, setTimeRange] = useState([540, 1020]); // 9:00 AM - 5:00 PM
 
@@ -39,6 +49,13 @@ const TimePicker = ({ isOpen, onClose, place, selectedDay }: TimePickerProps) =>
     return `${displayHour}:${mins.toString().padStart(2, '0')} ${ampm}`;
   };
 
+  // Helper function to convert minutes to HH:MM format for activities
+  const minutesToHHMM = (minutes: number) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+  };
+
   // Photo gallery data - using placeholder images
   const photos = [
     place.image, // Main image
@@ -49,10 +66,18 @@ const TimePicker = ({ isOpen, onClose, place, selectedDay }: TimePickerProps) =>
   ];
 
   const handleAddToSchedule = () => {
-    const startTime = minutesToTime(timeRange[0]);
-    const endTime = minutesToTime(timeRange[1]);
-    console.log(`Adding ${place.name} to Day ${selectedDay + 1} from ${startTime} to ${endTime}`);
-    // TODO: Add to schedule state/context
+    const startTime = minutesToHHMM(timeRange[0]);
+    const duration = timeRange[1] - timeRange[0]; // Duration in minutes
+    
+    const activity: Omit<Activity, 'id'> = {
+      name: place.name,
+      startTime,
+      duration,
+      category: 'sightseeing',
+      notes: `${place.rating} ⭐ • ${place.distance}`
+    };
+
+    onAddActivity(activity);
     onClose();
   };
 

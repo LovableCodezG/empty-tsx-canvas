@@ -3,11 +3,21 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import FlexibleCanvas from './FlexibleCanvas';
 
-interface ScheduleGridProps {
-  selectedDay: number;
+interface Activity {
+  id: string;
+  name: string;
+  startTime: string;
+  duration: number;
+  category: 'meal' | 'sightseeing' | 'transportation' | 'accommodation' | 'other';
+  notes?: string;
 }
 
-const ScheduleGrid = ({ selectedDay }: ScheduleGridProps) => {
+interface ScheduleGridProps {
+  selectedDay: number;
+  onAddActivity: (activity: Omit<Activity, 'id'>) => void;
+}
+
+const ScheduleGrid = ({ selectedDay, onAddActivity }: ScheduleGridProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
@@ -25,7 +35,7 @@ const ScheduleGrid = ({ selectedDay }: ScheduleGridProps) => {
       </div>
       
       <div id="canvas-grid" className="h-[500px] overflow-y-auto">
-        <FlexibleCanvas selectedDay={selectedDay} />
+        <FlexibleCanvas selectedDay={selectedDay} onAddActivity={onAddActivity} />
       </div>
     </motion.div>
   );
