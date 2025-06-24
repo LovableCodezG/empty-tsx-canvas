@@ -46,7 +46,7 @@ const ActivityBlock = ({ activity, onEdit, onDelete, pixelsPerMinute, startMinut
     const [hours, minutes] = time.split(':');
     const hour = parseInt(hours);
     const ampm = hour >= 12 ? 'PM' : 'AM';
-    const displayHour = hour % 12 || 12;
+    const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
     return `${displayHour}:${minutes} ${ampm}`;
   };
 
@@ -61,7 +61,7 @@ const ActivityBlock = ({ activity, onEdit, onDelete, pixelsPerMinute, startMinut
   // Calculate position and height
   const [hours, minutes] = activity.startTime.split(':').map(Number);
   const activityStartMinutes = hours * 60 + minutes;
-  const topPosition = (activityStartMinutes - startMinutes) * pixelsPerMinute;
+  const topPosition = (activityStartMinutes - startMinutes) * pixelsPerMinute + 20; // Add 20px offset for padding
   const height = activity.duration * pixelsPerMinute;
 
   return (
@@ -71,7 +71,7 @@ const ActivityBlock = ({ activity, onEdit, onDelete, pixelsPerMinute, startMinut
         getCategoryColor(activity.category)
       )}
       style={{
-        top: `${Math.max(0, topPosition)}px`,
+        top: `${Math.max(20, topPosition)}px`,
         height: `${Math.max(40, height)}px`,
         zIndex: 10
       }}

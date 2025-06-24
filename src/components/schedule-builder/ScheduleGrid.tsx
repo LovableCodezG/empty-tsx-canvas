@@ -20,7 +20,7 @@ const ScheduleGrid = ({ selectedDay }: ScheduleGridProps) => {
           Daily Schedule - Day {selectedDay + 1}
         </h2>
         <p className="text-sm text-gray-500 mt-1">
-          Create your custom schedule by clicking anywhere on the timeline
+          View and manage your daily activities
         </p>
       </div>
       

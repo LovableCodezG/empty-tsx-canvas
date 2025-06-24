@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import { Plus } from 'lucide-react';
 import ActivityBlock from './ActivityBlock';
 import ActivityModal from './ActivityModal';
 
@@ -20,7 +19,6 @@ interface FlexibleCanvasProps {
 const FlexibleCanvas = ({ selectedDay }: FlexibleCanvasProps) => {
   const [activities, setActivities] = useState<Record<number, Activity[]>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [clickedTime, setClickedTime] = useState<string>('');
   const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
 
   // Canvas configuration
@@ -31,29 +29,18 @@ const FlexibleCanvas = ({ selectedDay }: FlexibleCanvasProps) => {
 
   const generateTimeMarkers = () => {
     const markers = [];
-    for (let hour = startHour; hour <= endHour; hour++) {
+    for (let hour = startHour; hour < endHour; hour++) {
+      const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+      const ampm = hour < 12 ? 'AM' : 'PM';
+      const label = `${displayHour}:00 ${ampm}`;
+      
       markers.push({
         hour,
-        label: hour === 24 ? '00:00' : `${hour.toString().padStart(2, '0')}:00`,
+        label,
         position: (hour - startHour) * pixelsPerHour
       });
     }
     return markers;
-  };
-
-  const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === e.currentTarget) {
-      const rect = e.currentTarget.getBoundingClientRect();
-      const clickY = e.clientY - rect.top;
-      const clickedMinutes = Math.floor(clickY / pixelsPerMinute) + (startHour * 60);
-      const hours = Math.floor(clickedMinutes / 60);
-      const minutes = Math.floor((clickedMinutes % 60) / 15) * 15; // Snap to 15-minute intervals
-      
-      const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-      setClickedTime(timeString);
-      setEditingActivity(null);
-      setIsModalOpen(true);
-    }
   };
 
   const handleSaveActivity = (activityData: Omit<Activity, 'id'>) => {
@@ -97,18 +84,12 @@ const FlexibleCanvas = ({ selectedDay }: FlexibleCanvasProps) => {
 
   return (
     <div className="relative">
-      <div className="flex text-xs text-gray-500 mb-2 items-center gap-2">
-        <Plus className="h-4 w-4" />
-        <span>Click anywhere on the timeline to add an activity</span>
-      </div>
-      
       <div 
-        className="relative bg-white border border-gray-200 rounded-lg overflow-hidden cursor-pointer"
-        style={{ height: `${canvasHeight}px` }}
-        onClick={handleCanvasClick}
+        className="relative bg-white border border-gray-200 rounded-lg overflow-hidden"
+        style={{ height: `${canvasHeight}px`, paddingTop: '20px', paddingBottom: '20px' }}
       >
         {/* Time grid */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0" style={{ top: '20px', bottom: '20px' }}>
           {timeMarkers.map((marker) => (
             <div key={marker.hour}>
               {/* Hour line */}
@@ -126,7 +107,7 @@ const FlexibleCanvas = ({ selectedDay }: FlexibleCanvasProps) => {
               </div>
               
               {/* 15-minute subdivisions */}
-              {marker.hour < endHour && (
+              {marker.hour < endHour - 1 && (
                 <>
                   <div
                     className="absolute w-full border-t border-gray-100"
@@ -162,8 +143,7 @@ const FlexibleCanvas = ({ selectedDay }: FlexibleCanvasProps) => {
         {dayActivities.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="text-center text-gray-400">
-              <Plus className="h-8 w-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">Click anywhere to add your first activity</p>
+              <p className="text-sm">No activities scheduled for this day</p>
             </div>
           </div>
         )}
@@ -176,7 +156,6 @@ const FlexibleCanvas = ({ selectedDay }: FlexibleCanvasProps) => {
           setEditingActivity(null);
         }}
         onSave={handleSaveActivity}
-        initialTime={clickedTime}
         existingActivity={editingActivity || undefined}
       />
     </div>
