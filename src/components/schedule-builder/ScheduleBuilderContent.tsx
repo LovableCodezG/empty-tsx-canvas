@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -38,7 +39,7 @@ const ScheduleBuilderContent = () => {
   const [selectedDay, setSelectedDay] = useState(0);
   const [isAccommodationModalOpen, setIsAccommodationModalOpen] = useState(false);
   const [showValidationDialog, setShowValidationDialog] = useState(false);
-  const [emptyDays, setEmptyDays] = useState<string[]>([]);
+  const [emptyDays, setEmptyDays] = useState<number[]>([]);
   const [activities, setActivities] = useState<Record<number, Activity[]>>({});
 
   // Check if dates are properly set, redirect to destination page if not
@@ -82,7 +83,7 @@ const ScheduleBuilderContent = () => {
   // Validate schedule activities for each day
   const validateScheduleActivities = () => {
     const totalDays = getTotalDays();
-    const daysWithoutActivities: string[] = [];
+    const daysWithoutActivities: number[] = [];
     
     // Check each day individually
     for (let dayIndex = 0; dayIndex < totalDays; dayIndex++) {
@@ -108,7 +109,7 @@ const ScheduleBuilderContent = () => {
       
       // If no meaningful activities, add to list
       if (!hasMeaningfulActivities) {
-        daysWithoutActivities.push(formatDateForDay(dayIndex));
+        daysWithoutActivities.push(dayIndex + 1); // Day number (1-indexed)
       }
     }
     
@@ -134,7 +135,7 @@ const ScheduleBuilderContent = () => {
   };
 
   const handleContinueAnyway = () => {
-    console.log('User chose to continue without adding activities for:', emptyDays);
+    console.log('User chose to continue without adding activities for days:', emptyDays);
     setShowValidationDialog(false);
     setEmptyDays([]);
     // Navigate to expense estimation page
@@ -142,7 +143,7 @@ const ScheduleBuilderContent = () => {
   };
 
   const handleGoBackToAddPlans = () => {
-    console.log('User chose to go back and add plans for:', emptyDays);
+    console.log('User chose to go back and add plans for days:', emptyDays);
     setShowValidationDialog(false);
     setEmptyDays([]);
     // Dialog closes, user stays on current page
@@ -261,7 +262,7 @@ const ScheduleBuilderContent = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Activities Missing</AlertDialogTitle>
             <AlertDialogDescription>
-              You haven't scheduled any activities for the following day(s): {emptyDays.join(', ')}.
+              You haven't scheduled any activities for the following day(s): Day {emptyDays.join(', Day ')}.
               Would you like to continue anyway?
             </AlertDialogDescription>
           </AlertDialogHeader>
