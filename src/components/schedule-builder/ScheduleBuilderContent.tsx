@@ -78,7 +78,7 @@ const ScheduleBuilderContent = () => {
           <SuggestionsPanel selectedDay={selectedDay} onAddActivity={handleAddActivity} />
           <ScheduleGrid 
             selectedDay={selectedDay} 
-            onAddActivity={(callback) => { addActivityRef.current = callback; return callback; }}
+            onAddActivity={(callback) => { addActivityRef.current = callback; }}
           />
         </div>
 
