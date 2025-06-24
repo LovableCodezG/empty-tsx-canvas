@@ -83,13 +83,17 @@ const ScheduleBuilderContent = () => {
           <DaySelector selectedDay={selectedDay} onSelectDay={setSelectedDay} />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <SuggestionsPanel selectedDay={selectedDay} onAddActivity={handleAddActivity} />
-          <ScheduleGrid 
-            selectedDay={selectedDay} 
-            activities={activities}
-            onUpdateActivities={setActivities}
-          />
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
+          <div className="lg:col-span-2">
+            <SuggestionsPanel selectedDay={selectedDay} onAddActivity={handleAddActivity} />
+          </div>
+          <div className="lg:col-span-3">
+            <ScheduleGrid 
+              selectedDay={selectedDay} 
+              activities={activities}
+              onUpdateActivities={setActivities}
+            />
+          </div>
         </div>
 
         {/* Floating Action Buttons */}
