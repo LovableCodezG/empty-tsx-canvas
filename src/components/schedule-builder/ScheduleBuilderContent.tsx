@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Hotel } from 'lucide-react';
@@ -26,7 +27,7 @@ const ScheduleBuilderContent = () => {
   const { state } = useTripCreation();
   const [selectedDay, setSelectedDay] = useState(0);
   const [isAccommodationModalOpen, setIsAccommodationModalOpen] = useState(false);
-  const addActivityRef = useRef<((activity: Omit<Activity, 'id'>) => void) | null>(null);
+  const [activities, setActivities] = useState<Record<number, Activity[]>>({});
 
   // Check if dates are properly set, redirect to destination page if not
   useEffect(() => {
@@ -49,7 +50,16 @@ const ScheduleBuilderContent = () => {
 
   const handleAddActivity = (activity: Omit<Activity, 'id'>) => {
     console.log('Adding activity to schedule:', activity);
-    // This function will be passed to components that need to add activities
+    
+    const newActivity: Activity = {
+      ...activity,
+      id: Date.now().toString()
+    };
+
+    setActivities(prev => {
+      const dayActivities = prev[selectedDay] || [];
+      return { ...prev, [selectedDay]: [...dayActivities, newActivity] };
+    });
   };
 
   // Early return if no valid dates (while redirect is happening)
@@ -77,7 +87,8 @@ const ScheduleBuilderContent = () => {
           <SuggestionsPanel selectedDay={selectedDay} onAddActivity={handleAddActivity} />
           <ScheduleGrid 
             selectedDay={selectedDay} 
-            onAddActivity={handleAddActivity}
+            activities={activities}
+            onUpdateActivities={setActivities}
           />
         </div>
 

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import ActivityBlock from './ActivityBlock';
 import ActivityModal from './ActivityModal';
@@ -13,11 +14,11 @@ interface Activity {
 
 interface FlexibleCanvasProps {
   selectedDay: number;
-  onAddActivity: (activity: Omit<Activity, 'id'>) => void;
+  activities: Record<number, Activity[]>;
+  onUpdateActivities: React.Dispatch<React.SetStateAction<Record<number, Activity[]>>>;
 }
 
-const FlexibleCanvas = ({ selectedDay, onAddActivity }: FlexibleCanvasProps) => {
-  const [activities, setActivities] = useState<Record<number, Activity[]>>({});
+const FlexibleCanvas = ({ selectedDay, activities, onUpdateActivities }: FlexibleCanvasProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
 
@@ -49,7 +50,7 @@ const FlexibleCanvas = ({ selectedDay, onAddActivity }: FlexibleCanvasProps) => 
       id: editingActivity?.id || Date.now().toString()
     };
 
-    setActivities(prev => {
+    onUpdateActivities(prev => {
       const dayActivities = prev[selectedDay] || [];
       
       if (editingActivity) {
@@ -65,47 +66,18 @@ const FlexibleCanvas = ({ selectedDay, onAddActivity }: FlexibleCanvasProps) => 
     });
   };
 
-  // Handle activity addition from TimePicker
-  const handleAddActivityFromPicker = (activityData: Omit<Activity, 'id'>) => {
-    const newActivity: Activity = {
-      ...activityData,
-      id: Date.now().toString()
-    };
-
-    setActivities(prev => {
-      const dayActivities = prev[selectedDay] || [];
-      return { ...prev, [selectedDay]: [...dayActivities, newActivity] };
-    });
-  };
-
-  // Use the external onAddActivity prop
-  React.useEffect(() => {
-    if (onAddActivity) {
-      // Replace the prop function with our internal handler
-      const originalOnAddActivity = onAddActivity;
-      onAddActivity = handleAddActivityFromPicker;
-    }
-  }, [onAddActivity]);
-
   const handleEditActivity = (activity: Activity) => {
     setEditingActivity(activity);
     setIsModalOpen(true);
   };
 
   const handleDeleteActivity = (activityId: string) => {
-    setActivities(prev => {
+    onUpdateActivities(prev => {
       const dayActivities = prev[selectedDay] || [];
       const updatedActivities = dayActivities.filter(activity => activity.id !== activityId);
       return { ...prev, [selectedDay]: updatedActivities };
     });
   };
-
-  // Expose the addActivity function to parent components
-  React.useEffect(() => {
-    if (onAddActivity !== handleAddActivityFromPicker) {
-      onAddActivity = handleAddActivityFromPicker;
-    }
-  }, [selectedDay]);
 
   const timeMarkers = generateTimeMarkers();
   const dayActivities = activities[selectedDay] || [];

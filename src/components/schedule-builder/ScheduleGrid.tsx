@@ -14,10 +14,11 @@ interface Activity {
 
 interface ScheduleGridProps {
   selectedDay: number;
-  onAddActivity: (activity: Omit<Activity, 'id'>) => void;
+  activities: Record<number, Activity[]>;
+  onUpdateActivities: React.Dispatch<React.SetStateAction<Record<number, Activity[]>>>;
 }
 
-const ScheduleGrid = ({ selectedDay, onAddActivity }: ScheduleGridProps) => {
+const ScheduleGrid = ({ selectedDay, activities, onUpdateActivities }: ScheduleGridProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
@@ -35,7 +36,11 @@ const ScheduleGrid = ({ selectedDay, onAddActivity }: ScheduleGridProps) => {
       </div>
       
       <div id="canvas-grid" className="h-[500px] overflow-y-auto">
-        <FlexibleCanvas selectedDay={selectedDay} onAddActivity={onAddActivity} />
+        <FlexibleCanvas 
+          selectedDay={selectedDay} 
+          activities={activities}
+          onUpdateActivities={onUpdateActivities}
+        />
       </div>
     </motion.div>
   );
