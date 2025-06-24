@@ -8,7 +8,7 @@ import { Clock, MapPin, Calendar } from 'lucide-react';
 
 const TripItinerarySection = () => {
   const { state } = useTripCreation();
-  const [selectedDay, setSelectedDay] = useState(1);
+  const [selectedDay, setSelectedDay] = useState(0);
 
   const getTripDays = () => {
     if (state.dateType === 'single' && state.startDate) {
@@ -22,23 +22,29 @@ const TripItinerarySection = () => {
 
   const tripDays = getTripDays();
 
-  // Mock itinerary data for demonstration
-  const mockItinerary = {
-    1: [
-      { time: '09:00', activity: 'Airport Pickup', icon: '🚗', location: 'Airport Terminal' },
-      { time: '11:00', activity: 'Hotel Check-in', icon: '🏨', location: 'City Center Hotel' },
-      { time: '14:00', activity: 'City Walking Tour', icon: '🚶', location: 'Historic District' },
-      { time: '18:00', activity: 'Welcome Dinner', icon: '🍽️', location: 'Local Restaurant' },
-    ],
-    2: [
-      { time: '08:00', activity: 'Breakfast', icon: '🥐', location: 'Hotel Restaurant' },
-      { time: '10:00', activity: 'Museum Visit', icon: '🏛️', location: 'National Museum' },
-      { time: '13:00', activity: 'Lunch Break', icon: '🍕', location: 'Pizza Place' },
-      { time: '15:30', activity: 'Shopping', icon: '🛍️', location: 'Shopping District' },
-    ]
-  };
+  // Get actual activities from context
+  const currentDayActivities = state.scheduleActivities[selectedDay] || [];
 
-  const currentDayItinerary = mockItinerary[selectedDay as keyof typeof mockItinerary] || [];
+  // Helper function to get activity emoji based on category
+  const getActivityIcon = (category: string, name: string) => {
+    switch (category) {
+      case 'meal':
+        if (name.toLowerCase().includes('breakfast')) return '🥐';
+        if (name.toLowerCase().includes('lunch')) return '🍕';
+        if (name.toLowerCase().includes('dinner')) return '🍽️';
+        return '🍽️';
+      case 'sightseeing':
+        return '🏛️';
+      case 'transportation':
+        return '🚗';
+      case 'accommodation':
+        return '🏨';
+      case 'other':
+        return '📍';
+      default:
+        return '📍';
+    }
+  };
 
   return (
     <motion.div
@@ -59,10 +65,10 @@ const TripItinerarySection = () => {
             <div className="flex gap-2 overflow-x-auto pb-2">
               {Array.from({ length: tripDays }, (_, index) => (
                 <Button
-                  key={index + 1}
-                  variant={selectedDay === index + 1 ? "default" : "outline"}
+                  key={index}
+                  variant={selectedDay === index ? "default" : "outline"}
                   size="sm"
-                  onClick={() => setSelectedDay(index + 1)}
+                  onClick={() => setSelectedDay(index)}
                   className="flex-shrink-0"
                 >
                   Day {index + 1}
@@ -74,22 +80,30 @@ const TripItinerarySection = () => {
           <div className="grid md:grid-cols-2 gap-6">
             {/* Left Panel - Itinerary Details */}
             <div id="itinerary-day-details" className="space-y-3">
-              <h3 className="font-semibold text-gray-900 mb-4">Day {selectedDay} Schedule</h3>
-              {currentDayItinerary.length > 0 ? (
+              <h3 className="font-semibold text-gray-900 mb-4">Day {selectedDay + 1} Schedule</h3>
+              {currentDayActivities.length > 0 ? (
                 <div className="space-y-3">
-                  {currentDayItinerary.map((item, index) => (
-                    <div key={index} className="itinerary-item-row border rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
+                  {currentDayActivities
+                    .sort((a, b) => a.startTime.localeCompare(b.startTime))
+                    .map((activity, index) => (
+                    <div key={activity.id} className="itinerary-item-row border rounded-lg p-4 bg-gray-50 hover:bg-gray-100 transition-colors">
                       <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2 min-w-0 flex-1">
                           <Clock className="h-4 w-4 text-gray-500 flex-shrink-0" />
-                          <span className="text-sm font-medium text-gray-600">{item.time}</span>
-                          <span className="text-xl">{item.icon}</span>
+                          <span className="text-sm font-medium text-gray-600">{activity.startTime}</span>
+                          <span className="text-xl">{getActivityIcon(activity.category, activity.name)}</span>
                           <div className="min-w-0 flex-1">
-                            <p className="font-medium text-gray-900">{item.activity}</p>
+                            <p className="font-medium text-gray-900">{activity.name}</p>
                             <div className="flex items-center gap-1 text-sm text-gray-500">
                               <MapPin className="h-3 w-3" />
-                              <span className="truncate">{item.location}</span>
+                              <span className="truncate">{activity.category}</span>
+                              {activity.duration && (
+                                <span className="text-xs text-gray-400">• {activity.duration}h</span>
+                              )}
                             </div>
+                            {activity.notes && (
+                              <p className="text-xs text-gray-500 mt-1">{activity.notes}</p>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -100,7 +114,7 @@ const TripItinerarySection = () => {
                 <div className="text-center py-8 text-gray-500">
                   <Calendar className="h-12 w-12 mx-auto mb-3 text-gray-400" />
                   <p>No activities planned for this day yet.</p>
-                  <p className="text-sm">Activities will be populated from Schedule Builder.</p>
+                  <p className="text-sm">Activities from Schedule Builder will appear here.</p>
                 </div>
               )}
             </div>

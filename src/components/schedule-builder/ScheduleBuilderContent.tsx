@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -35,12 +36,12 @@ interface Activity {
 
 const ScheduleBuilderContent = () => {
   const navigate = useNavigate();
-  const { state } = useTripCreation();
+  const { state, dispatch } = useTripCreation();
   const [selectedDay, setSelectedDay] = useState(0);
   const [isAccommodationModalOpen, setIsAccommodationModalOpen] = useState(false);
   const [showValidationDialog, setShowValidationDialog] = useState(false);
   const [emptyDays, setEmptyDays] = useState<number[]>([]);
-  const [activities, setActivities] = useState<Record<number, Activity[]>>({});
+  const [activities, setActivities] = useState<Record<number, Activity[]>>(state.scheduleActivities);
 
   // Check if dates are properly set, redirect to destination page if not
   useEffect(() => {
@@ -54,6 +55,14 @@ const ScheduleBuilderContent = () => {
       navigate('/create-trip/destination');
     }
   }, [state.dateType, state.startDate, state.dateRange, navigate]);
+
+  // Save activities to context whenever they change
+  useEffect(() => {
+    dispatch({
+      type: 'SET_SCHEDULE_ACTIVITIES',
+      payload: activities
+    });
+  }, [activities, dispatch]);
 
   // Helper function to get total number of days
   const getTotalDays = () => {

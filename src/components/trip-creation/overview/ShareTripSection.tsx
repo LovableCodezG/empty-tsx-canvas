@@ -108,10 +108,6 @@ const ShareTripSection = () => {
                 Members can edit schedule and cost details collaboratively.
               </p>
             </div>
-
-            <div className="text-sm text-blue-600">
-              This feature is NOT locked behind premium — available to all group users
-            </div>
           </div>
         </CardContent>
       </Card>

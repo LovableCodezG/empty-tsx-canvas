@@ -6,7 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Plus, CheckSquare, Trash2 } from 'lucide-react';
+import { Plus, CheckSquare, Trash2, ListTodo } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -62,14 +62,6 @@ const TripChecklistSection = () => {
     });
   };
 
-  const defaultTasks = [
-    { id: '1', text: 'Pack clothes and essentials', completed: false },
-    { id: '2', text: 'Check passport and documents', completed: false },
-    { id: '3', text: 'Book airport transfers', completed: false }
-  ];
-
-  const displayTasks = checklist.length > 0 ? checklist : defaultTasks;
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -85,18 +77,18 @@ const TripChecklistSection = () => {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {/* Checklist Items */}
-            <div className="space-y-3">
-              {displayTasks.map((task) => (
-                <div key={task.id} className="checklist-item flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 transition-colors">
-                  <Checkbox
-                    checked={task.completed}
-                    onCheckedChange={() => handleToggleTask(task.id)}
-                  />
-                  <span className={`flex-1 ${task.completed ? 'line-through text-gray-500' : 'text-gray-900'}`}>
-                    {task.text}
-                  </span>
-                  {checklist.length > 0 && (
+            {/* Checklist Items or Empty State */}
+            {checklist.length > 0 ? (
+              <div className="space-y-3">
+                {checklist.map((task) => (
+                  <div key={task.id} className="checklist-item flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                    <Checkbox
+                      checked={task.completed}
+                      onCheckedChange={() => handleToggleTask(task.id)}
+                    />
+                    <span className={`flex-1 ${task.completed ? 'line-through text-gray-500' : 'text-gray-900'}`}>
+                      {task.text}
+                    </span>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -105,10 +97,16 @@ const TripChecklistSection = () => {
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
-                  )}
-                </div>
-              ))}
-            </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-gray-500">
+                <ListTodo className="h-12 w-12 mx-auto mb-3 text-gray-400" />
+                <p className="font-medium">No checklist items yet</p>
+                <p className="text-sm">Add tasks to prepare for your trip</p>
+              </div>
+            )}
 
             {/* Add New Task */}
             <div className="flex gap-2">
