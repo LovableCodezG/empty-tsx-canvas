@@ -100,7 +100,7 @@ const ActivityBlock = ({
 
   return (
     <div
-      className="absolute left-2 right-2 rounded-lg p-2 cursor-pointer group hover:shadow-md transition-all duration-200"
+      className="absolute left-20 right-2 rounded-lg p-2 cursor-pointer group hover:shadow-md transition-all duration-200"
       style={{
         top: `${Math.max(20, topPosition)}px`,
         height: `${Math.max(40, height)}px`,
