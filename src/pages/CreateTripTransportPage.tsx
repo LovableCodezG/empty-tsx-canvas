@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTripCreation } from '@/contexts/TripCreationContext';
 import TripCreationCloseButton from '@/components/trip-creation/TripCreationCloseButton';
@@ -9,6 +10,31 @@ import TransportOptionsPanel from '@/components/trip-creation/TransportOptionsPa
 const CreateTripTransportPage = () => {
   const { state } = useTripCreation();
   const navigate = useNavigate();
+
+  // Check if prerequisites are met, redirect to destination page if not
+  useEffect(() => {
+    const hasValidDates = state.dateType && (
+      (state.dateType === 'single' && state.startDate) ||
+      (state.dateType === 'range' && state.dateRange?.from)
+    );
+
+    const hasValidDestination = state.tripType && 
+      hasValidDates &&
+      state.destinationType && (
+      state.destinationType === 'domestic' || 
+      (state.destinationType === 'international' && state.selectedCountry)
+    ) && (
+      state.tripType === 'personal' || 
+      (state.tripType === 'group' && state.groupMembers.every(member => 
+        member.name.trim() !== '' && member.email.trim() !== ''
+      ))
+    );
+
+    if (!hasValidDestination) {
+      console.log('Invalid destination or schedule data, redirecting to destination page');
+      navigate('/create-trip/destination');
+    }
+  }, [state, navigate]);
 
   const canProceed = state.transportMode !== null && (
     state.transportMode !== 'rental' || 
@@ -26,6 +52,28 @@ const CreateTripTransportPage = () => {
       navigate('/create-trip/expenses');
     }
   };
+
+  // Early return if validation is failing (while redirect is happening)
+  const hasValidDates = state.dateType && (
+    (state.dateType === 'single' && state.startDate) ||
+    (state.dateType === 'range' && state.dateRange?.from)
+  );
+
+  const hasValidDestination = state.tripType && 
+    hasValidDates &&
+    state.destinationType && (
+    state.destinationType === 'domestic' || 
+    (state.destinationType === 'international' && state.selectedCountry)
+  ) && (
+    state.tripType === 'personal' || 
+    (state.tripType === 'group' && state.groupMembers.every(member => 
+      member.name.trim() !== '' && member.email.trim() !== ''
+    ))
+  );
+
+  if (!hasValidDestination) {
+    return null; // Don't render anything while redirecting
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
