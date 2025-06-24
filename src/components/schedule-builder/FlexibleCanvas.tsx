@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import ActivityBlock from './ActivityBlock';
 import ActivityModal from './ActivityModal';
@@ -10,6 +9,7 @@ interface Activity {
   duration: number;
   category: 'meal' | 'sightseeing' | 'transportation' | 'accommodation' | 'other';
   notes?: string;
+  colorIndex?: number;
 }
 
 interface FlexibleCanvasProps {
