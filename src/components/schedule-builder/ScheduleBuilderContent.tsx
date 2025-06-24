@@ -38,6 +38,7 @@ const ScheduleBuilderContent = () => {
   const [selectedDay, setSelectedDay] = useState(0);
   const [isAccommodationModalOpen, setIsAccommodationModalOpen] = useState(false);
   const [showValidationDialog, setShowValidationDialog] = useState(false);
+  const [emptyDays, setEmptyDays] = useState<string[]>([]);
   const [activities, setActivities] = useState<Record<number, Activity[]>>({});
 
   // Check if dates are properly set, redirect to destination page if not
@@ -53,42 +54,76 @@ const ScheduleBuilderContent = () => {
     }
   }, [state.dateType, state.startDate, state.dateRange, navigate]);
 
-  // Validate if user has added meaningful activities
+  // Helper function to get total number of days
+  const getTotalDays = () => {
+    if (state.dateType === 'single' && state.startDate) {
+      return 1;
+    }
+    if (state.dateType === 'range' && state.dateRange?.from && state.dateRange?.to) {
+      const timeDiff = state.dateRange.to.getTime() - state.dateRange.from.getTime();
+      return Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+    }
+    return 0;
+  };
+
+  // Helper function to format date for display
+  const formatDateForDay = (dayIndex: number) => {
+    if (state.dateType === 'single' && state.startDate) {
+      return state.startDate.toLocaleDateString();
+    }
+    if (state.dateType === 'range' && state.dateRange?.from) {
+      const date = new Date(state.dateRange.from);
+      date.setDate(date.getDate() + dayIndex);
+      return date.toLocaleDateString();
+    }
+    return '';
+  };
+
+  // Validate schedule activities for each day
   const validateScheduleActivities = () => {
-    let meaningfulActivitiesCount = 0;
+    const totalDays = getTotalDays();
+    const daysWithoutActivities: string[] = [];
     
-    // Check all days
-    Object.values(activities).forEach(dayActivities => {
-      if (dayActivities) {
-        dayActivities.forEach(activity => {
-          // Skip accommodation activities (check-in/check-out)
-          if (activity.category === 'accommodation') {
-            return;
-          }
-          
-          // Skip breakfast activities
-          if (activity.category === 'meal' && 
-              activity.name.toLowerCase().includes('breakfast')) {
-            return;
-          }
-          
-          // Count all other activities as meaningful
-          meaningfulActivitiesCount++;
-        });
+    // Check each day individually
+    for (let dayIndex = 0; dayIndex < totalDays; dayIndex++) {
+      const dayActivities = activities[dayIndex] || [];
+      let hasMeaningfulActivities = false;
+      
+      // Check if this day has meaningful activities
+      dayActivities.forEach(activity => {
+        // Skip accommodation activities (check-in/check-out)
+        if (activity.category === 'accommodation') {
+          return;
+        }
+        
+        // Skip breakfast activities
+        if (activity.category === 'meal' && 
+            activity.name.toLowerCase().includes('breakfast')) {
+          return;
+        }
+        
+        // Found a meaningful activity
+        hasMeaningfulActivities = true;
+      });
+      
+      // If no meaningful activities, add to list
+      if (!hasMeaningfulActivities) {
+        daysWithoutActivities.push(formatDateForDay(dayIndex));
       }
-    });
+    }
     
-    return meaningfulActivitiesCount > 0;
+    return daysWithoutActivities;
   };
 
   const handleNext = () => {
     console.log('Checking schedule validation before proceeding');
     
-    // Validate if user has added meaningful activities
-    const hasMeaningfulActivities = validateScheduleActivities();
+    // Validate if user has added meaningful activities for each day
+    const daysWithoutActivities = validateScheduleActivities();
     
-    if (!hasMeaningfulActivities) {
-      console.log('No meaningful activities found, showing validation dialog');
+    if (daysWithoutActivities.length > 0) {
+      console.log('Found days without activities:', daysWithoutActivities);
+      setEmptyDays(daysWithoutActivities);
       setShowValidationDialog(true);
       return;
     }
@@ -99,15 +134,17 @@ const ScheduleBuilderContent = () => {
   };
 
   const handleContinueAnyway = () => {
-    console.log('User chose to continue without adding places');
+    console.log('User chose to continue without adding activities for:', emptyDays);
     setShowValidationDialog(false);
+    setEmptyDays([]);
     // Navigate to expense estimation page
     // navigate('/create-trip/expenses');
   };
 
-  const handleGoBackToAddPlaces = () => {
-    console.log('User chose to go back and add places');
+  const handleGoBackToAddPlans = () => {
+    console.log('User chose to go back and add plans for:', emptyDays);
     setShowValidationDialog(false);
+    setEmptyDays([]);
     // Dialog closes, user stays on current page
   };
 
@@ -222,14 +259,15 @@ const ScheduleBuilderContent = () => {
       <AlertDialog open={showValidationDialog} onOpenChange={setShowValidationDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>No Places Added</AlertDialogTitle>
+            <AlertDialogTitle>Activities Missing</AlertDialogTitle>
             <AlertDialogDescription>
-              You haven't added any places to visit. Do you still want to continue?
+              You haven't scheduled any activities for the following day(s): {emptyDays.join(', ')}.
+              Would you like to continue anyway?
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={handleGoBackToAddPlaces}>
-              Go Back to Add Places
+            <AlertDialogCancel onClick={handleGoBackToAddPlans}>
+              Go Back to Add Plans
             </AlertDialogCancel>
             <AlertDialogAction onClick={handleContinueAnyway}>
               Yes, Continue
