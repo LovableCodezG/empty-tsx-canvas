@@ -1,0 +1,99 @@
+
+{
+  "user": {
+    "name": "Sarah",
+    "email": "sarah@example.com",
+    "avatar": "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=400&q=80",
+    "initials": "SK"
+  },
+  "welcome": {
+    "greeting": "Welcome back",
+    "subtitle": "Ready to plan your next adventure?"
+  },
+  "navigation": [
+    {
+      "label": "Dashboard",
+      "path": "/dashboard",
+      "icon": "home"
+    },
+    {
+      "label": "Browse Trips",
+      "path": "/trips",
+      "icon": "map"
+    }
+  ],
+  "trips": [
+    {
+      "id": "1",
+      "destination": "Paris, France",
+      "dates": "Mar 15-22, 2024",
+      "status": "Upcoming",
+      "image": "https://images.unsplash.com/photo-1502602898536-47ad22581b52?w=500&q=80",
+      "members": [
+        {
+          "name": "Sarah Kim",
+          "avatar": "/placeholder.svg",
+          "initials": "SK"
+        },
+        {
+          "name": "John Doe",
+          "avatar": "/placeholder.svg",
+          "initials": "JD"
+        },
+        {
+          "name": "Emma Wilson",
+          "avatar": "/placeholder.svg",
+          "initials": "EW"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "destination": "Tokyo, Japan",
+      "dates": "Jun 8-18, 2024",
+      "status": "In Progress",
+      "image": "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=500&q=80",
+      "members": [
+        {
+          "name": "Sarah Kim",
+          "avatar": "/placeholder.svg",
+          "initials": "SK"
+        },
+        {
+          "name": "Mike Chen",
+          "avatar": "/placeholder.svg",
+          "initials": "MC"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "destination": "Bali, Indonesia",
+      "dates": "Aug 12-19, 2023",
+      "status": "Completed",
+      "image": "https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=500&q=80",
+      "members": [
+        {
+          "name": "Sarah Kim",
+          "avatar": "/placeholder.svg",
+          "initials": "SK"
+        },
+        {
+          "name": "Lisa Park",
+          "avatar": "/placeholder.svg",
+          "initials": "LP"
+        },
+        {
+          "name": "Alex Johnson",
+          "avatar": "/placeholder.svg",
+          "initials": "AJ"
+        },
+        {
+          "name": "Maria Garcia",
+          "avatar": "/placeholder.svg",
+          "initials": "MG"
+        }
+      ]
+    }
+  ]
+}

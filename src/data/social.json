@@ -1,0 +1,25 @@
+
+{
+  "socialLinks": [
+    {
+      "platform": "twitter",
+      "url": "https://twitter.com/spotplan",
+      "icon": "twitter"
+    },
+    {
+      "platform": "instagram",
+      "url": "https://instagram.com/spotplan",
+      "icon": "instagram"
+    },
+    {
+      "platform": "facebook",
+      "url": "https://facebook.com/spotplan",
+      "icon": "facebook"
+    },
+    {
+      "platform": "linkedin",
+      "url": "https://linkedin.com/company/spotplan",
+      "icon": "linkedin"
+    }
+  ]
+}

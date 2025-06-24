@@ -1,0 +1,55 @@
+
+{
+  "hero": {
+    "title": "Plan Your Perfect Trip with AI",
+    "subtitle": "Smart itineraries, expense tracking, and group planning made simple",
+    "ctaText": "Start Planning",
+    "backgroundImage": "/placeholder-travel-bg.jpg"
+  },
+  "highlights": [
+    {
+      "id": "plan-with-friends",
+      "title": "Plan with Friends",
+      "description": "Collaborate in real-time with your travel companions",
+      "icon": "users"
+    },
+    {
+      "id": "smart-expenses",
+      "title": "Smart Expense Estimator",
+      "description": "AI-powered budget planning and cost predictions",
+      "icon": "calculator"
+    },
+    {
+      "id": "ai-suggestions",
+      "title": "AI-Powered Suggestions",
+      "description": "Personalized recommendations for activities and dining",
+      "icon": "sparkles"
+    }
+  ],
+  "howItWorks": [
+    {
+      "step": 1,
+      "title": "Create Trip",
+      "description": "Set your destination and travel dates",
+      "icon": "map-pin"
+    },
+    {
+      "step": 2,
+      "title": "Build Schedule",
+      "description": "Add activities and organize your itinerary",
+      "icon": "calendar"
+    },
+    {
+      "step": 3,
+      "title": "Estimate Expenses",
+      "description": "Get accurate budget forecasts with AI",
+      "icon": "dollar-sign"
+    },
+    {
+      "step": 4,
+      "title": "Collaborate",
+      "description": "Share and plan together with your group",
+      "icon": "share-2"
+    }
+  ]
+}
