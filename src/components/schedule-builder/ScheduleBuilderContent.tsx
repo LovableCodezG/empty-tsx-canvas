@@ -134,17 +134,17 @@ const ScheduleBuilderContent = () => {
       return;
     }
     
-    // Navigate to expense estimation page
-    console.log('Proceeding to expense estimation');
-    // navigate('/create-trip/expenses');
+    // Navigate to transport preference page
+    console.log('Proceeding to transport selection');
+    navigate('/create-trip/transport');
   };
 
   const handleContinueAnyway = () => {
     console.log('User chose to continue without adding activities for days:', emptyDays);
     setShowValidationDialog(false);
     setEmptyDays([]);
-    // Navigate to expense estimation page
-    // navigate('/create-trip/expenses');
+    // Navigate to transport preference page
+    navigate('/create-trip/transport');
   };
 
   const handleGoBackToAddPlans = () => {

@@ -31,6 +31,9 @@ export interface TripCreationState {
   startDate: Date | null;
   endDate: Date | null;
   dateRange: DateRange | undefined;
+  // Transport-related fields
+  transportMode: 'skip' | 'uber' | 'rental' | null;
+  rentalCostPerDay: number | null;
   // Backend Integration: Add these fields when implementing API
   // isLoading?: boolean;
   // error?: string | null;
@@ -45,6 +48,8 @@ type TripCreationAction =
   | { type: 'SET_GROUP_MEMBERS'; payload: GroupMember[] }
   | { type: 'SET_CURRENT_STEP'; payload: number }
   | { type: 'SET_TRIP_DATES'; payload: { dateType: 'single' | 'range'; startDate?: Date | null; endDate?: Date | null; dateRange?: DateRange | undefined } }
+  | { type: 'SET_TRANSPORT_MODE'; payload: 'skip' | 'uber' | 'rental' }
+  | { type: 'SET_RENTAL_COST_PER_DAY'; payload: number | null }
   | { type: 'RESET' };
   // Backend Integration: Add these actions when implementing API
   // | { type: 'SET_LOADING'; payload: boolean }
@@ -62,6 +67,8 @@ const initialState: TripCreationState = {
   startDate: null,
   endDate: null,
   dateRange: undefined,
+  transportMode: null,
+  rentalCostPerDay: null,
 };
 
 const tripCreationReducer = (state: TripCreationState, action: TripCreationAction): TripCreationState => {
@@ -91,6 +98,15 @@ const tripCreationReducer = (state: TripCreationState, action: TripCreationActio
         endDate: action.payload.endDate !== undefined ? action.payload.endDate : state.endDate,
         dateRange: action.payload.dateRange !== undefined ? action.payload.dateRange : state.dateRange,
       };
+    case 'SET_TRANSPORT_MODE':
+      return { 
+        ...state, 
+        transportMode: action.payload,
+        // Reset rental cost when switching away from rental
+        ...(action.payload !== 'rental' && { rentalCostPerDay: null })
+      };
+    case 'SET_RENTAL_COST_PER_DAY':
+      return { ...state, rentalCostPerDay: action.payload };
     case 'RESET':
       return initialState;
     default:
