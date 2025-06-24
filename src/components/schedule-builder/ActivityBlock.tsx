@@ -23,11 +23,11 @@ interface ActivityBlockProps {
 const ActivityBlock = ({ activity, onEdit, onDelete, pixelsPerMinute, startMinutes }: ActivityBlockProps) => {
   const getCategoryColor = (category: Activity['category']) => {
     switch (category) {
-      case 'meal': return 'bg-orange-200/70 border-orange-300 text-orange-900';
-      case 'sightseeing': return 'bg-blue-200/70 border-blue-300 text-blue-900';
-      case 'transportation': return 'bg-gray-200/70 border-gray-300 text-gray-900';
-      case 'accommodation': return 'bg-green-200/70 border-green-300 text-green-900';
-      default: return 'bg-purple-200/70 border-purple-300 text-purple-900';
+      case 'meal': return 'bg-orange-200/50 hover:bg-orange-200 border-orange-300 text-orange-900';
+      case 'sightseeing': return 'bg-blue-200/50 hover:bg-blue-200 border-blue-300 text-blue-900';
+      case 'transportation': return 'bg-gray-200/50 hover:bg-gray-200 border-gray-300 text-gray-900';
+      case 'accommodation': return 'bg-green-200/50 hover:bg-green-200 border-green-300 text-green-900';
+      default: return 'bg-purple-200/50 hover:bg-purple-200 border-purple-300 text-purple-900';
     }
   };
 
