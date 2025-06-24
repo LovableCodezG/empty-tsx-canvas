@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Star, Clock, AlertTriangle } from 'lucide-react';
 import {
@@ -179,12 +178,6 @@ const TimePicker = ({ isOpen, onClose, place, selectedDay, onAddActivity, existi
                 <div className={`text-sm mt-1 ${hasConflict ? 'text-red-700' : 'text-blue-700'}`}>
                   Duration: {Math.round((timeRange[1] - timeRange[0]) / 60 * 10) / 10} hours
                 </div>
-                {hasConflict && (
-                  <div className="flex items-center justify-center gap-1 mt-2 text-red-700">
-                    <AlertTriangle className="h-4 w-4" />
-                    <span className="text-sm font-medium">Time conflict detected</span>
-                  </div>
-                )}
               </div>
 
               {/* Conflict Warning */}
@@ -196,6 +189,10 @@ const TimePicker = ({ isOpen, onClose, place, selectedDay, onAddActivity, existi
                       • {conflict.name} ({minutesToTime(conflict.start)} - {minutesToTime(conflict.end)})
                     </p>
                   ))}
+                  <div className="flex items-center gap-1 mt-2 text-red-700">
+                    <AlertTriangle className="h-4 w-4" />
+                    <span className="text-sm font-medium">Time conflict detected</span>
+                  </div>
                 </div>
               )}
 
