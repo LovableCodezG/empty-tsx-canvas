@@ -100,10 +100,10 @@ const ActivityBlock = ({
 
   return (
     <div
-      className="absolute left-20 right-2 rounded-lg p-2 cursor-pointer group hover:shadow-md transition-all duration-200"
+      className="absolute left-20 right-2 rounded-lg cursor-pointer group hover:shadow-md transition-all duration-200 overflow-hidden"
       style={{
         top: `${Math.max(20, topPosition)}px`,
-        height: `${Math.max(40, height)}px`,
+        height: `${Math.max(60, height)}px`, // Increased minimum height
         zIndex: 10,
         '--rotation': `${globalRotation}rad`,
         '--card-bg': colors.bg,
@@ -119,46 +119,53 @@ const ActivityBlock = ({
       } as React.CSSProperties}
       onClick={() => onEdit(activity)}
     >
-      <div className="flex items-start justify-between h-full">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1 mb-1">
-            <span className="text-sm">{getCategoryIcon(activity.category)}</span>
-            <span className="font-medium text-sm truncate">{activity.name}</span>
-          </div>
-          <div className="text-xs opacity-80">
-            {formatTime(activity.startTime)} - {formatTime(getEndTime())}
-          </div>
-          {activity.notes && (
-            <div className="text-xs opacity-70 mt-1 truncate">
-              {activity.notes}
-            </div>
-          )}
+      {/* Action buttons - positioned absolutely in top right */}
+      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10 flex gap-1">
+        <Button
+          size="sm"
+          variant="ghost"
+          className="h-6 w-6 p-0 hover:bg-black/10 rounded-full"
+          onClick={(e) => {
+            e.stopPropagation();
+            onEdit(activity);
+          }}
+        >
+          <Edit className="h-3 w-3" />
+        </Button>
+        <Button
+          size="sm"
+          variant="ghost"
+          className="h-6 w-6 p-0 hover:bg-red-200 rounded-full"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(activity.id);
+          }}
+        >
+          <Trash2 className="h-3 w-3" />
+        </Button>
+      </div>
+
+      {/* Main content */}
+      <div className="p-2 pr-16 h-full flex flex-col justify-start overflow-hidden">
+        {/* Activity name and icon */}
+        <div className="flex items-start gap-1 mb-1 min-h-0">
+          <span className="text-sm flex-shrink-0">{getCategoryIcon(activity.category)}</span>
+          <span className="font-medium text-sm leading-tight break-words overflow-hidden">
+            {activity.name}
+          </span>
         </div>
         
-        <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2 ml-2">
-          <Button
-            size="sm"
-            variant="ghost"
-            className="h-10 w-10 p-0 hover:bg-black/10 rounded-full"
-            onClick={(e) => {
-              e.stopPropagation();
-              onEdit(activity);
-            }}
-          >
-            <Edit className="h-5 w-5" />
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            className="h-10 w-10 p-0 hover:bg-red-200 rounded-full"
-            onClick={(e) => {
-              e.stopPropagation();
-              onDelete(activity.id);
-            }}
-          >
-            <Trash2 className="h-5 w-5" />
-          </Button>
+        {/* Time display */}
+        <div className="text-xs opacity-80 mb-1 flex-shrink-0">
+          {formatTime(activity.startTime)} - {formatTime(getEndTime())}
         </div>
+        
+        {/* Notes - only show if there's space */}
+        {activity.notes && height > 80 && (
+          <div className="text-xs opacity-70 leading-tight break-words overflow-hidden flex-1">
+            {activity.notes}
+          </div>
+        )}
       </div>
     </div>
   );
