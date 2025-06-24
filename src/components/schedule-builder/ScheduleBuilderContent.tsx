@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -48,18 +49,21 @@ const ScheduleBuilderContent = () => {
     // navigate('/create-trip/expenses');
   };
 
-  const handleAddActivity = (activity: Omit<Activity, 'id'>) => {
-    console.log('Adding activity to schedule:', activity);
+  const handleAddActivity = (activity: Omit<Activity, 'id'>, targetDay?: number) => {
+    console.log('Adding activity to schedule:', activity, 'Target day:', targetDay);
     
     const newActivity: Activity = {
       ...activity,
-      id: Date.now().toString(),
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 9), // More unique ID
       colorIndex: Math.floor(Math.random() * 4) // Random color index 0-3
     };
 
+    const dayToUse = targetDay !== undefined ? targetDay : selectedDay;
+    console.log('Adding activity to day:', dayToUse);
+
     setActivities(prev => {
-      const dayActivities = prev[selectedDay] || [];
-      return { ...prev, [selectedDay]: [...dayActivities, newActivity] };
+      const dayActivities = prev[dayToUse] || [];
+      return { ...prev, [dayToUse]: [...dayActivities, newActivity] };
     });
   };
 

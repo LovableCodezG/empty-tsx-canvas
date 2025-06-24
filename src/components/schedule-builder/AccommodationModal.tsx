@@ -31,7 +31,7 @@ interface AccommodationModalProps {
   isOpen: boolean;
   onClose: () => void;
   selectedDay: number;
-  onAddActivity: (activity: Omit<Activity, 'id'>) => void;
+  onAddActivity: (activity: Omit<Activity, 'id'>, targetDay?: number) => void;
 }
 
 const AccommodationModal = ({ isOpen, onClose, selectedDay, onAddActivity }: AccommodationModalProps) => {
@@ -105,7 +105,11 @@ const AccommodationModal = ({ isOpen, onClose, selectedDay, onAddActivity }: Acc
     const checkInDayIndex = calculateDayIndex(dateRange.from);
     const checkOutDayIndex = calculateDayIndex(dateRange.to);
 
-    // Add check-in activity
+    console.log('Date range:', dateRange);
+    console.log('Check-in day index:', checkInDayIndex);
+    console.log('Check-out day index:', checkOutDayIndex);
+
+    // Add check-in activity to the specific check-in day
     onAddActivity({
       name: `Check-in: ${selectedHotel.name}`,
       startTime: checkInTime,
@@ -113,15 +117,9 @@ const AccommodationModal = ({ isOpen, onClose, selectedDay, onAddActivity }: Acc
       category: 'accommodation',
       notes: `Check-in at ${selectedHotel.location}`,
       source: 'place'
-    });
+    }, checkInDayIndex);
 
-    // Add check-out activity (need to use a callback to add to different day)
-    // For now, we'll add it to the selected day and let the parent handle day routing
-    if (checkOutDayIndex !== checkInDayIndex) {
-      // TODO: Add mechanism to add activities to specific days
-      console.log('Check-out should be added to day', checkOutDayIndex);
-    }
-    
+    // Add check-out activity to the specific check-out day
     onAddActivity({
       name: `Check-out: ${selectedHotel.name}`,
       startTime: checkOutTime,
@@ -129,16 +127,16 @@ const AccommodationModal = ({ isOpen, onClose, selectedDay, onAddActivity }: Acc
       category: 'accommodation',
       notes: `Check-out from ${selectedHotel.location}`,
       source: 'place'
-    });
+    }, checkOutDayIndex);
 
     // Add breakfast activities (excluding check-in day)
     if (includeBreakfast) {
-      const totalDays = differenceInDays(dateRange.to, dateRange.from) + 1;
       const breakfastDuration = (parseInt(breakfastEndTime.split(':')[0]) * 60 + parseInt(breakfastEndTime.split(':')[1])) - 
                                (parseInt(breakfastStartTime.split(':')[0]) * 60 + parseInt(breakfastStartTime.split(':')[1]));
       
-      // Add breakfast for each day except check-in day
-      for (let dayOffset = 1; dayOffset < totalDays; dayOffset++) {
+      // Add breakfast for each day except check-in day (starting from day after check-in)
+      for (let dayIndex = checkInDayIndex + 1; dayIndex <= checkOutDayIndex; dayIndex++) {
+        console.log('Adding breakfast to day:', dayIndex);
         onAddActivity({
           name: `Breakfast at ${selectedHotel.name}`,
           startTime: breakfastStartTime,
@@ -146,7 +144,7 @@ const AccommodationModal = ({ isOpen, onClose, selectedDay, onAddActivity }: Acc
           category: 'meal',
           notes: 'Hotel breakfast',
           source: 'place'
-        });
+        }, dayIndex);
       }
     }
 
