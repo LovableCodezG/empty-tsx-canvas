@@ -97,6 +97,10 @@ const AccommodationModal = ({ isOpen, onClose, selectedDay }: AccommodationModal
     return "Select dates";
   };
 
+  const handleBreakfastToggle = (checked: boolean | "indeterminate") => {
+    setIncludeBreakfast(checked === true);
+  };
+
   if (showScheduleForm) {
     return (
       <Dialog open={isOpen} onOpenChange={onClose}>
@@ -172,7 +176,7 @@ const AccommodationModal = ({ isOpen, onClose, selectedDay }: AccommodationModal
                 <Checkbox
                   id="breakfast"
                   checked={includeBreakfast}
-                  onCheckedChange={setIncludeBreakfast}
+                  onCheckedChange={handleBreakfastToggle}
                 />
                 <label htmlFor="breakfast" className="text-sm font-medium">
                   Optional Breakfast
