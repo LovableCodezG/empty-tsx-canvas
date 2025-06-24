@@ -27,9 +27,10 @@ interface PlaceSuggestionCardProps {
   place: Place;
   selectedDay: number;
   onAddActivity: (activity: Omit<Activity, 'id'>) => void;
+  existingActivities: Activity[];
 }
 
-const PlaceSuggestionCard = ({ place, selectedDay, onAddActivity }: PlaceSuggestionCardProps) => {
+const PlaceSuggestionCard = ({ place, selectedDay, onAddActivity, existingActivities }: PlaceSuggestionCardProps) => {
   const [showTimePicker, setShowTimePicker] = useState(false);
 
   const handleCardClick = () => {
@@ -71,6 +72,7 @@ const PlaceSuggestionCard = ({ place, selectedDay, onAddActivity }: PlaceSuggest
         place={place}
         selectedDay={selectedDay}
         onAddActivity={onAddActivity}
+        existingActivities={existingActivities}
       />
     </>
   );

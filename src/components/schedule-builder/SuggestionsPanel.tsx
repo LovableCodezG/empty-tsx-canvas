@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, MapPin, Utensils } from 'lucide-react';
@@ -19,9 +18,10 @@ interface Activity {
 interface SuggestionsPanelProps {
   selectedDay: number;
   onAddActivity: (activity: Omit<Activity, 'id'>) => void;
+  existingActivities: Activity[];
 }
 
-const SuggestionsPanel = ({ selectedDay, onAddActivity }: SuggestionsPanelProps) => {
+const SuggestionsPanel = ({ selectedDay, onAddActivity, existingActivities }: SuggestionsPanelProps) => {
   const [activeTab, setActiveTab] = useState<'places' | 'restaurants'>('places');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -136,6 +136,7 @@ const SuggestionsPanel = ({ selectedDay, onAddActivity }: SuggestionsPanelProps)
             place={place}
             selectedDay={selectedDay}
             onAddActivity={onAddActivity}
+            existingActivities={existingActivities}
           />
         ))}
         

@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { Star, Clock } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Star, Clock, AlertTriangle } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -34,11 +34,18 @@ interface TimePickerProps {
   place: Place;
   selectedDay: number;
   onAddActivity: (activity: Omit<Activity, 'id'>) => void;
+  existingActivities: Activity[];
 }
 
-const TimePicker = ({ isOpen, onClose, place, selectedDay, onAddActivity }: TimePickerProps) => {
+const TimePicker = ({ isOpen, onClose, place, selectedDay, onAddActivity, existingActivities }: TimePickerProps) => {
   // Convert 9 AM to 5 PM as default range (in minutes from midnight)
   const [timeRange, setTimeRange] = useState([540, 1020]); // 9:00 AM - 5:00 PM
+
+  // Helper function to convert HH:MM to minutes from midnight
+  const timeToMinutes = (timeStr: string) => {
+    const [hours, minutes] = timeStr.split(':').map(Number);
+    return hours * 60 + minutes;
+  };
 
   // Helper function to convert minutes to 12-hour format
   const minutesToTime = (minutes: number) => {
@@ -56,6 +63,32 @@ const TimePicker = ({ isOpen, onClose, place, selectedDay, onAddActivity }: Time
     return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
   };
 
+  // Calculate occupied time ranges from existing activities
+  const occupiedRanges = useMemo(() => {
+    return existingActivities.map(activity => {
+      const startMinutes = timeToMinutes(activity.startTime);
+      const endMinutes = startMinutes + activity.duration;
+      return { start: startMinutes, end: endMinutes, name: activity.name };
+    });
+  }, [existingActivities]);
+
+  // Check if current selection conflicts with existing activities
+  const hasConflict = useMemo(() => {
+    const [start, end] = timeRange;
+    return occupiedRanges.some(range => 
+      (start < range.end && end > range.start)
+    );
+  }, [timeRange, occupiedRanges]);
+
+  // Get conflicting activities for display
+  const conflictingActivities = useMemo(() => {
+    if (!hasConflict) return [];
+    const [start, end] = timeRange;
+    return occupiedRanges.filter(range => 
+      (start < range.end && end > range.start)
+    );
+  }, [hasConflict, timeRange, occupiedRanges]);
+
   // Photo gallery data - using placeholder images
   const photos = [
     place.image, // Main image
@@ -66,6 +99,11 @@ const TimePicker = ({ isOpen, onClose, place, selectedDay, onAddActivity }: Time
   ];
 
   const handleAddToSchedule = () => {
+    if (hasConflict) {
+      // You could show a confirmation dialog here instead
+      return;
+    }
+
     const startTime = minutesToHHMM(timeRange[0]);
     const duration = timeRange[1] - timeRange[0]; // Duration in minutes
     
@@ -134,17 +172,35 @@ const TimePicker = ({ isOpen, onClose, place, selectedDay, onAddActivity }: Time
               </label>
               
               {/* Time Range Display */}
-              <div className="mb-4 p-3 bg-blue-50 rounded-lg text-center">
-                <span className="text-lg font-medium text-blue-900">
+              <div className={`mb-4 p-3 rounded-lg text-center ${hasConflict ? 'bg-red-50' : 'bg-blue-50'}`}>
+                <span className={`text-lg font-medium ${hasConflict ? 'text-red-900' : 'text-blue-900'}`}>
                   {minutesToTime(timeRange[0])} - {minutesToTime(timeRange[1])}
                 </span>
-                <div className="text-sm text-blue-700 mt-1">
+                <div className={`text-sm mt-1 ${hasConflict ? 'text-red-700' : 'text-blue-700'}`}>
                   Duration: {Math.round((timeRange[1] - timeRange[0]) / 60 * 10) / 10} hours
                 </div>
+                {hasConflict && (
+                  <div className="flex items-center justify-center gap-1 mt-2 text-red-700">
+                    <AlertTriangle className="h-4 w-4" />
+                    <span className="text-sm font-medium">Time conflict detected</span>
+                  </div>
+                )}
               </div>
 
-              {/* Range Slider */}
-              <div className="px-3">
+              {/* Conflict Warning */}
+              {hasConflict && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-sm text-red-800 font-medium mb-1">Conflicts with:</p>
+                  {conflictingActivities.map((conflict, index) => (
+                    <p key={index} className="text-sm text-red-700">
+                      • {conflict.name} ({minutesToTime(conflict.start)} - {minutesToTime(conflict.end)})
+                    </p>
+                  ))}
+                </div>
+              )}
+
+              {/* Range Slider with Occupied Time Overlay */}
+              <div className="px-3 relative">
                 <Slider
                   value={timeRange}
                   onValueChange={setTimeRange}
@@ -153,6 +209,24 @@ const TimePicker = ({ isOpen, onClose, place, selectedDay, onAddActivity }: Time
                   step={30} // 30-minute intervals
                   className="w-full"
                 />
+                
+                {/* Occupied Time Indicators */}
+                <div className="absolute top-0 left-3 right-3 h-2 pointer-events-none">
+                  {occupiedRanges.map((range, index) => {
+                    const startPercent = ((range.start - 360) / (1320 - 360)) * 100;
+                    const widthPercent = ((range.end - range.start) / (1320 - 360)) * 100;
+                    return (
+                      <div
+                        key={index}
+                        className="absolute h-full bg-red-300 opacity-60 rounded"
+                        style={{
+                          left: `${Math.max(0, startPercent)}%`,
+                          width: `${Math.min(100 - Math.max(0, startPercent), widthPercent)}%`
+                        }}
+                      />
+                    );
+                  })}
+                </div>
                 
                 {/* Time Labels */}
                 <div className="flex justify-between text-xs text-gray-500 mt-2">
@@ -176,9 +250,10 @@ const TimePicker = ({ isOpen, onClose, place, selectedDay, onAddActivity }: Time
             </Button>
             <Button
               onClick={handleAddToSchedule}
-              className="flex-1 bg-spot-primary hover:bg-spot-primary/90"
+              disabled={hasConflict}
+              className="flex-1 bg-spot-primary hover:bg-spot-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Add to Schedule
+              {hasConflict ? 'Resolve Conflict' : 'Add to Schedule'}
             </Button>
           </div>
         </div>

@@ -85,7 +85,11 @@ const ScheduleBuilderContent = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
           <div className="lg:col-span-2">
-            <SuggestionsPanel selectedDay={selectedDay} onAddActivity={handleAddActivity} />
+            <SuggestionsPanel 
+              selectedDay={selectedDay} 
+              onAddActivity={handleAddActivity}
+              existingActivities={activities[selectedDay] || []}
+            />
           </div>
           <div className="lg:col-span-3">
             <ScheduleGrid 
