@@ -2,18 +2,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useTripCreation } from '@/contexts/TripCreationContext';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
 const TransportCostSection = () => {
-  const { state, dispatch } = useTripCreation();
-
-  const handleFuelCostChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    const numericValue = value === '' ? null : parseFloat(value);
-    dispatch({ type: 'SET_FUEL_COST', payload: numericValue });
-  };
+  const { state } = useTripCreation();
 
   const getTripDays = () => {
     if (state.dateType === 'single' && state.startDate) {
@@ -80,27 +72,14 @@ const TransportCostSection = () => {
                   <div className="text-lg font-medium">₹{state.rentalCostPerDay || 0}</div>
                 </div>
               </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="fuel-cost">Fuel estimate (optional) (₹)</Label>
-                <Input
-                  id="fuel-cost"
-                  type="number"
-                  placeholder="Enter estimated fuel cost"
-                  value={state.fuelCost || ''}
-                  onChange={handleFuelCostChange}
-                  min="0"
-                  step="100"
-                />
-                <p className="text-xs text-gray-500">
-                  Bolt will calculate fuel costs automatically based on your itinerary if not provided.
-                </p>
-              </div>
 
               <div className="bg-gray-50 p-3 rounded-lg">
                 <p className="text-sm font-medium">Estimated Total Rental Cost:</p>
                 <p className="text-lg font-bold text-spot-primary">
-                  ₹{((state.rentalCostPerDay || 0) * getTripDays()) + (state.fuelCost || 0)}
+                  ₹{(state.rentalCostPerDay || 0) * getTripDays()}
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Fuel costs will be calculated automatically by Bolt based on your itinerary.
                 </p>
               </div>
             </div>

@@ -15,7 +15,7 @@ const FoodCostSection = () => {
     >
       <Card>
         <CardHeader>
-          <CardTitle className="text-xl text-gray-900">Meal Costs</CardTitle>
+          <CardTitle className="text-xl text-gray-900">Restaurant / Food Costs</CardTitle>
           <p className="text-sm text-gray-600">
             Estimates based on restaurants from your itinerary and group size.
           </p>
