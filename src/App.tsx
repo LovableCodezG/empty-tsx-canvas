@@ -17,6 +17,7 @@ import ProfilePage from "./pages/ProfilePage";
 import CreateTripDestinationPage from "./pages/CreateTripDestinationPage";
 import CreateTripSchedulePage from "./pages/CreateTripSchedulePage";
 import CreateTripTransportPage from "./pages/CreateTripTransportPage";
+import CreateTripExpensePage from "./pages/CreateTripExpensePage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +40,7 @@ const App: React.FC = () => {
                   <Route path="destination" element={<CreateTripDestinationPage />} />
                   <Route path="schedule" element={<CreateTripSchedulePage />} />
                   <Route path="transport" element={<CreateTripTransportPage />} />
+                  <Route path="expenses" element={<CreateTripExpensePage />} />
                 </Routes>
               </TripCreationProvider>
             } />

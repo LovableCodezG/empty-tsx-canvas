@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTripCreation } from '@/contexts/TripCreationContext';
@@ -24,9 +23,7 @@ const CreateTripTransportPage = () => {
   const handleNext = () => {
     if (canProceed) {
       console.log('Proceeding to expense estimation with transport:', state.transportMode);
-      // TODO: Navigate to expense estimation page when implemented
-      // navigate('/create-trip/expenses');
-      console.log('Expense estimation page not yet implemented');
+      navigate('/create-trip/expenses');
     }
   };
 
