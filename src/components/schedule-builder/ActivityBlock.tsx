@@ -138,24 +138,24 @@ const ActivityBlock = ({
           <Button
             size="sm"
             variant="ghost"
-            className="h-6 w-6 p-0 hover:bg-black/10"
+            className="h-8 w-8 p-0 hover:bg-black/10"
             onClick={(e) => {
               e.stopPropagation();
               onEdit(activity);
             }}
           >
-            <Edit className="h-3 w-3" />
+            <Edit className="h-4 w-4" />
           </Button>
           <Button
             size="sm"
             variant="ghost"
-            className="h-6 w-6 p-0 hover:bg-red-200"
+            className="h-8 w-8 p-0 hover:bg-red-200"
             onClick={(e) => {
               e.stopPropagation();
               onDelete(activity.id);
             }}
           >
-            <Trash2 className="h-3 w-3" />
+            <Trash2 className="h-4 w-4" />
           </Button>
         </div>
       </div>
