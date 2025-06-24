@@ -32,6 +32,12 @@ export interface MealCost {
   estimatedCost: number;
 }
 
+export interface ChecklistItem {
+  id: string;
+  text: string;
+  completed: boolean;
+}
+
 export interface TripCreationState {
   tripType: 'group' | 'personal' | null;
   destinationType: 'domestic' | 'international' | null;
@@ -60,6 +66,8 @@ export interface TripCreationState {
   visaInsuranceCost: number | null;
   activitiesCost: number | null;
   miscCost: number | null;
+  // Overview-related fields
+  checklistItems: ChecklistItem[];
   // Backend Integration: Add these fields when implementing API
   // isLoading?: boolean;
   // error?: string | null;
@@ -88,6 +96,7 @@ type TripCreationAction =
   | { type: 'SET_VISA_INSURANCE_COST'; payload: number | null }
   | { type: 'SET_ACTIVITIES_COST'; payload: number | null }
   | { type: 'SET_MISC_COST'; payload: number | null }
+  | { type: 'SET_CHECKLIST_ITEMS'; payload: ChecklistItem[] }
   | { type: 'RESET' };
   // Backend Integration: Add these actions when implementing API
   // | { type: 'SET_LOADING'; payload: boolean }
@@ -119,6 +128,7 @@ const initialState: TripCreationState = {
   visaInsuranceCost: null,
   activitiesCost: null,
   miscCost: null,
+  checklistItems: [],
 };
 
 const tripCreationReducer = (state: TripCreationState, action: TripCreationAction): TripCreationState => {
@@ -181,6 +191,8 @@ const tripCreationReducer = (state: TripCreationState, action: TripCreationActio
       return { ...state, activitiesCost: action.payload };
     case 'SET_MISC_COST':
       return { ...state, miscCost: action.payload };
+    case 'SET_CHECKLIST_ITEMS':
+      return { ...state, checklistItems: action.payload };
     case 'RESET':
       return initialState;
     default:

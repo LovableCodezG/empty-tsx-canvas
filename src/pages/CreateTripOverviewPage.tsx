@@ -1,19 +1,19 @@
-import React, { useEffect } from 'react';
+
+import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTripCreation } from '@/contexts/TripCreationContext';
 import TripCreationCloseButton from '@/components/trip-creation/TripCreationCloseButton';
-import TripNavigationButtons from '@/components/trip-creation/TripNavigationButtons';
-import ExpenseHeader from '@/components/trip-creation/expense/ExpenseHeader';
-import BudgetInputSection from '@/components/trip-creation/expense/BudgetInputSection';
-import TransportCostSection from '@/components/trip-creation/expense/TransportCostSection';
-import FoodCostSection from '@/components/trip-creation/expense/FoodCostSection';
-import HotelCostSection from '@/components/trip-creation/expense/HotelCostSection';
-import ActivitiesCostSection from '@/components/trip-creation/expense/ActivitiesCostSection';
-import ExpenseSummary from '@/components/trip-creation/expense/ExpenseSummary';
+import OverviewHeader from '@/components/trip-creation/overview/OverviewHeader';
+import TripItinerarySection from '@/components/trip-creation/overview/TripItinerarySection';
+import CostSummarySection from '@/components/trip-creation/overview/CostSummarySection';
+import TripChecklistSection from '@/components/trip-creation/overview/TripChecklistSection';
+import GroupMembersSection from '@/components/trip-creation/overview/GroupMembersSection';
+import ShareTripSection from '@/components/trip-creation/overview/ShareTripSection';
 
-const CreateTripExpensePage = () => {
+const CreateTripOverviewPage = () => {
   const { state } = useTripCreation();
   const navigate = useNavigate();
+  const shareRef = useRef<HTMLDivElement>(null);
 
   // Check if prerequisites are met, redirect to destination page if not
   useEffect(() => {
@@ -45,14 +45,17 @@ const CreateTripExpensePage = () => {
     }
   }, [state, navigate]);
 
-  const handleBack = () => {
-    console.log('Navigating back to transport page');
-    navigate('/create-trip/transport');
+  const handleShareClick = () => {
+    shareRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const handleNext = () => {
-    console.log('Proceeding to trip overview');
-    navigate('/create-trip/overview');
+  const handleEditClick = () => {
+    navigate('/create-trip/destination');
+  };
+
+  const handleFinishClick = () => {
+    console.log('Trip creation completed, navigating to dashboard');
+    navigate('/dashboard');
   };
 
   // Early return if validation is failing (while redirect is happening)
@@ -86,29 +89,25 @@ const CreateTripExpensePage = () => {
     <div className="min-h-screen bg-gray-50">
       <TripCreationCloseButton />
       
-      <div className="container mx-auto px-6 py-8 pb-24">
-        <ExpenseHeader />
+      <div className="container mx-auto px-6 py-8">
+        <OverviewHeader
+          onShareClick={handleShareClick}
+          onEditClick={handleEditClick}
+          onFinishClick={handleFinishClick}
+        />
         
         <div className="max-w-4xl mx-auto space-y-8">
-          <BudgetInputSection />
-          <TransportCostSection />
-          <FoodCostSection />
-          {state.destinationType === 'international' && <HotelCostSection />}
-          <ActivitiesCostSection />
-          <ExpenseSummary />
+          <TripItinerarySection />
+          <CostSummarySection />
+          <TripChecklistSection />
+          <GroupMembersSection />
+          <div ref={shareRef}>
+            <ShareTripSection />
+          </div>
         </div>
       </div>
-
-      <TripNavigationButtons
-        showBack={true}
-        onBack={handleBack}
-        backText="← Transport"
-        nextText="Next → Trip Overview"
-        onNext={handleNext}
-        canProceed={true}
-      />
     </div>
   );
 };
 
-export default CreateTripExpensePage;
+export default CreateTripOverviewPage;
