@@ -48,9 +48,8 @@ const ScheduleBuilderContent = () => {
   };
 
   const handleAddActivity = (activity: Omit<Activity, 'id'>) => {
-    if (addActivityRef.current) {
-      addActivityRef.current(activity);
-    }
+    console.log('Adding activity to schedule:', activity);
+    // This function will be passed to components that need to add activities
   };
 
   // Early return if no valid dates (while redirect is happening)
@@ -78,7 +77,7 @@ const ScheduleBuilderContent = () => {
           <SuggestionsPanel selectedDay={selectedDay} onAddActivity={handleAddActivity} />
           <ScheduleGrid 
             selectedDay={selectedDay} 
-            onAddActivity={(callback) => { addActivityRef.current = callback; }}
+            onAddActivity={handleAddActivity}
           />
         </div>
 
