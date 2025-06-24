@@ -1,12 +1,10 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, MapPin, Utensils, Hotel } from 'lucide-react';
+import { Search, MapPin, Utensils } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import PlaceSuggestionCard from './PlaceSuggestionCard';
-import AccommodationModal from './AccommodationModal';
 
 interface SuggestionsPanelProps {
   selectedDay: number;
@@ -15,7 +13,6 @@ interface SuggestionsPanelProps {
 const SuggestionsPanel = ({ selectedDay }: SuggestionsPanelProps) => {
   const [activeTab, setActiveTab] = useState<'places' | 'restaurants'>('places');
   const [searchQuery, setSearchQuery] = useState('');
-  const [showAccommodationModal, setShowAccommodationModal] = useState(false);
 
   // Dummy data - To be connected to Google Places API
   const placesData = [
@@ -144,25 +141,6 @@ const SuggestionsPanel = ({ selectedDay }: SuggestionsPanelProps) => {
           </div>
         )}
       </div>
-
-      {/* Add Accommodation Button */}
-      <div className="mt-4 pt-4 border-t border-gray-200">
-        <Button
-          id="open-hotel-popup-button"
-          variant="outline"
-          className="w-full flex items-center gap-2 hover:bg-spot-beige"
-          onClick={() => setShowAccommodationModal(true)}
-        >
-          <Hotel className="h-4 w-4" />
-          🏨 Add Accommodation
-        </Button>
-      </div>
-
-      <AccommodationModal
-        isOpen={showAccommodationModal}
-        onClose={() => setShowAccommodationModal(false)}
-        selectedDay={selectedDay}
-      />
     </motion.div>
   );
 };
