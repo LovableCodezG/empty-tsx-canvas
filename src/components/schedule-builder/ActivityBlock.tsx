@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -134,28 +135,28 @@ const ActivityBlock = ({
           )}
         </div>
         
-        <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1 ml-2">
+        <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-2 ml-2">
           <Button
             size="sm"
             variant="ghost"
-            className="h-8 w-8 p-0 hover:bg-black/10"
+            className="h-10 w-10 p-0 hover:bg-black/10 rounded-full"
             onClick={(e) => {
               e.stopPropagation();
               onEdit(activity);
             }}
           >
-            <Edit className="h-4 w-4" />
+            <Edit className="h-5 w-5" />
           </Button>
           <Button
             size="sm"
             variant="ghost"
-            className="h-8 w-8 p-0 hover:bg-red-200"
+            className="h-10 w-10 p-0 hover:bg-red-200 rounded-full"
             onClick={(e) => {
               e.stopPropagation();
               onDelete(activity.id);
             }}
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="h-5 w-5" />
           </Button>
         </div>
       </div>
