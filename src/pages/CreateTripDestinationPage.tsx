@@ -1,15 +1,12 @@
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
 import { useTripCreation } from '@/contexts/TripCreationContext';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
 import DestinationHeader from '@/components/trip-creation/DestinationHeader';
 import DestinationInputPanel from '@/components/trip-creation/DestinationInputPanel';
 import DestinationMapPanel from '@/components/trip-creation/DestinationMapPanel';
 import TripCreationCloseButton from '@/components/trip-creation/TripCreationCloseButton';
+import TripNavigationButtons from '@/components/trip-creation/TripNavigationButtons';
 
 const CreateTripDestinationPage = () => {
   const { state } = useTripCreation();
@@ -55,38 +52,21 @@ const CreateTripDestinationPage = () => {
     <div className="min-h-screen bg-gray-50">
       <TripCreationCloseButton />
       
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-6 py-8 pb-24">
         <DestinationHeader />
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           <DestinationInputPanel />
           <DestinationMapPanel />
         </div>
-
-        {/* Sticky CTA Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="fixed bottom-6 right-6 z-20"
-        >
-          <Button
-            id="next-to-schedule-button"
-            onClick={handleNext}
-            disabled={!canProceed}
-            size="lg"
-            className={cn(
-              "h-14 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300",
-              canProceed
-                ? "bg-spot-primary hover:bg-spot-primary/90 text-white"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            )}
-          >
-            Next → Build Your Schedule
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
-        </motion.div>
       </div>
+
+      <TripNavigationButtons
+        showBack={false}
+        nextText="Next → Build Your Schedule"
+        onNext={handleNext}
+        canProceed={canProceed}
+      />
     </div>
   );
 };

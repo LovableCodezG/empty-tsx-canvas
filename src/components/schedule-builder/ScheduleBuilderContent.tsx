@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Hotel } from 'lucide-react';
+import { Hotel } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   AlertDialog,
@@ -17,6 +16,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useTripCreation } from '@/contexts/TripCreationContext';
 import TripCreationCloseButton from '@/components/trip-creation/TripCreationCloseButton';
+import TripNavigationButtons from '@/components/trip-creation/TripNavigationButtons';
 import ScheduleHeader from './ScheduleHeader';
 import DaySelector from './DaySelector';
 import SuggestionsPanel from './SuggestionsPanel';
@@ -116,6 +116,11 @@ const ScheduleBuilderContent = () => {
     return daysWithoutActivities;
   };
 
+  const handleBack = () => {
+    console.log('Navigating back to destination page');
+    navigate('/create-trip/destination');
+  };
+
   const handleNext = () => {
     console.log('Checking schedule validation before proceeding');
     
@@ -181,7 +186,7 @@ const ScheduleBuilderContent = () => {
     <div className="min-h-screen bg-gray-50">
       <TripCreationCloseButton />
       
-      <div className="container mx-auto px-6 py-8">
+      <div className="container mx-auto px-6 py-8 pb-24">
         <ScheduleHeader />
         
         <div className="mb-8">
@@ -205,9 +210,8 @@ const ScheduleBuilderContent = () => {
           </div>
         </div>
 
-        {/* Floating Action Buttons */}
-        <div className="fixed bottom-6 right-6 z-20 flex flex-col gap-3 items-end">
-          {/* Add Accommodation Button */}
+        {/* Add Accommodation Button - positioned higher to avoid navigation buttons */}
+        <div className="fixed bottom-24 right-6 z-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -226,28 +230,17 @@ const ScheduleBuilderContent = () => {
               Add Accommodation
             </Button>
           </motion.div>
-
-          {/* Next Button */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-          >
-            <Button
-              id="next-to-expense-button"
-              onClick={handleNext}
-              size="lg"
-              className={cn(
-                "h-14 px-8 rounded-full shadow-lg hover:shadow-xl transition-all duration-300",
-                "bg-spot-primary hover:bg-spot-primary/90 text-white"
-              )}
-            >
-              Next → Estimate Expenses
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </motion.div>
         </div>
       </div>
+
+      <TripNavigationButtons
+        showBack={true}
+        onBack={handleBack}
+        backText="← Back"
+        nextText="Next → Estimate Expenses"
+        onNext={handleNext}
+        canProceed={true}
+      />
 
       <AccommodationModal
         isOpen={isAccommodationModalOpen}
