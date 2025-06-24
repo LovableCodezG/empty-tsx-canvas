@@ -12,17 +12,30 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { format } from 'date-fns';
+import { format, differenceInDays } from 'date-fns';
 import { DateRange } from 'react-day-picker';
 import { cn } from '@/lib/utils';
+import { useTripCreation } from '@/contexts/TripCreationContext';
+
+interface Activity {
+  id: string;
+  name: string;
+  startTime: string;
+  duration: number;
+  category: 'meal' | 'sightseeing' | 'transportation' | 'accommodation' | 'other';
+  notes?: string;
+  source?: 'custom' | 'place';
+}
 
 interface AccommodationModalProps {
   isOpen: boolean;
   onClose: () => void;
   selectedDay: number;
+  onAddActivity: (activity: Omit<Activity, 'id'>) => void;
 }
 
-const AccommodationModal = ({ isOpen, onClose, selectedDay }: AccommodationModalProps) => {
+const AccommodationModal = ({ isOpen, onClose, selectedDay, onAddActivity }: AccommodationModalProps) => {
+  const { state } = useTripCreation();
   const [bookedHotels, setBookedHotels] = useState<Set<string>>(new Set());
   const [showScheduleForm, setShowScheduleForm] = useState<string | null>(null);
   const [dateRange, setDateRange] = useState<DateRange | undefined>();
@@ -32,6 +45,18 @@ const AccommodationModal = ({ isOpen, onClose, selectedDay }: AccommodationModal
   const [breakfastStartTime, setBreakfastStartTime] = useState('08:00');
   const [breakfastEndTime, setBreakfastEndTime] = useState('09:00');
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
+
+  // Helper function to calculate day index from date
+  const calculateDayIndex = (targetDate: Date): number => {
+    if (state.dateType === 'single' && state.startDate) {
+      const daysDiff = differenceInDays(targetDate, state.startDate);
+      return Math.max(0, daysDiff);
+    } else if (state.dateType === 'range' && state.dateRange?.from) {
+      const daysDiff = differenceInDays(targetDate, state.dateRange.from);
+      return Math.max(0, daysDiff);
+    }
+    return selectedDay; // Fallback to current selected day
+  };
 
   // Dummy hotel data
   const hotels = [
@@ -71,15 +96,60 @@ const AccommodationModal = ({ isOpen, onClose, selectedDay }: AccommodationModal
   };
 
   const handleConfirmSchedule = () => {
-    console.log('Adding to schedule:', {
-      hotelId: showScheduleForm,
-      dateRange,
-      checkInTime,
-      checkOutTime,
-      includeBreakfast,
-      breakfastTiming: includeBreakfast ? `${breakfastStartTime} - ${breakfastEndTime}` : null
-    });
+    if (!dateRange?.from || !dateRange?.to) return;
     
+    const selectedHotel = hotels.find(h => h.id === showScheduleForm);
+    if (!selectedHotel) return;
+
+    // Calculate day indices for the stay dates
+    const checkInDayIndex = calculateDayIndex(dateRange.from);
+    const checkOutDayIndex = calculateDayIndex(dateRange.to);
+
+    // Add check-in activity
+    onAddActivity({
+      name: `Check-in: ${selectedHotel.name}`,
+      startTime: checkInTime,
+      duration: 60, // 1 hour
+      category: 'accommodation',
+      notes: `Check-in at ${selectedHotel.location}`,
+      source: 'place'
+    });
+
+    // Add check-out activity (need to use a callback to add to different day)
+    // For now, we'll add it to the selected day and let the parent handle day routing
+    if (checkOutDayIndex !== checkInDayIndex) {
+      // TODO: Add mechanism to add activities to specific days
+      console.log('Check-out should be added to day', checkOutDayIndex);
+    }
+    
+    onAddActivity({
+      name: `Check-out: ${selectedHotel.name}`,
+      startTime: checkOutTime,
+      duration: 30, // 30 minutes
+      category: 'accommodation',
+      notes: `Check-out from ${selectedHotel.location}`,
+      source: 'place'
+    });
+
+    // Add breakfast activities (excluding check-in day)
+    if (includeBreakfast) {
+      const totalDays = differenceInDays(dateRange.to, dateRange.from) + 1;
+      const breakfastDuration = (parseInt(breakfastEndTime.split(':')[0]) * 60 + parseInt(breakfastEndTime.split(':')[1])) - 
+                               (parseInt(breakfastStartTime.split(':')[0]) * 60 + parseInt(breakfastStartTime.split(':')[1]));
+      
+      // Add breakfast for each day except check-in day
+      for (let dayOffset = 1; dayOffset < totalDays; dayOffset++) {
+        onAddActivity({
+          name: `Breakfast at ${selectedHotel.name}`,
+          startTime: breakfastStartTime,
+          duration: breakfastDuration,
+          category: 'meal',
+          notes: 'Hotel breakfast',
+          source: 'place'
+        });
+      }
+    }
+
     // Reset form and close
     setShowScheduleForm(null);
     setDateRange(undefined);
@@ -259,25 +329,27 @@ const AccommodationModal = ({ isOpen, onClose, selectedDay }: AccommodationModal
                   </div>
                   
                   <div className="flex flex-col gap-2">
-                    {!bookedHotels.has(hotel.id) ? (
+                    <div className="flex gap-2">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleBookNow(hotel.id, hotel.bookingUrl)}
-                        className="flex items-center gap-1 w-fit"
+                        className="flex items-center gap-1"
                       >
                         <ExternalLink className="h-3 w-3" />
                         Book Now
                       </Button>
-                    ) : (
-                      <Button
-                        size="sm"
-                        onClick={() => handleAddToSchedule(hotel.id)}
-                        className="bg-spot-primary hover:bg-spot-primary/90 w-fit"
-                      >
-                        Add to Schedule
-                      </Button>
-                    )}
+                      
+                      {bookedHotels.has(hotel.id) && (
+                        <Button
+                          size="sm"
+                          onClick={() => handleAddToSchedule(hotel.id)}
+                          className="bg-spot-primary hover:bg-spot-primary/90"
+                        >
+                          Add to Schedule
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>

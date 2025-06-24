@@ -149,6 +149,7 @@ const ScheduleBuilderContent = () => {
         isOpen={isAccommodationModalOpen}
         onClose={() => setIsAccommodationModalOpen(false)}
         selectedDay={selectedDay}
+        onAddActivity={handleAddActivity}
       />
     </div>
   );
