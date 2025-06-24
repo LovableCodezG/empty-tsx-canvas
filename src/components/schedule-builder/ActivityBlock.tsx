@@ -1,5 +1,4 @@
-
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import { Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -20,33 +19,17 @@ interface ActivityBlockProps {
   onDelete: (activityId: string) => void;
   pixelsPerMinute: number;
   startMinutes: number;
+  globalRotation?: number;
 }
 
-const ActivityBlock = ({ activity, onEdit, onDelete, pixelsPerMinute, startMinutes }: ActivityBlockProps) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  // Add mouse tracking for edge highlight effect
-  useEffect(() => {
-    const card = cardRef.current;
-    const handleMouseMove = (e: MouseEvent) => {
-      if (card) {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
-        const angle = Math.atan2(-x, y);
-        card.style.setProperty("--rotation", angle + "rad");
-      }
-    };
-    if (card) {
-      card.addEventListener("mousemove", handleMouseMove);
-    }
-    return () => {
-      if (card) {
-        card.removeEventListener("mousemove", handleMouseMove);
-      }
-    };
-  }, []);
-
+const ActivityBlock = ({ 
+  activity, 
+  onEdit, 
+  onDelete, 
+  pixelsPerMinute, 
+  startMinutes, 
+  globalRotation = 4.2 
+}: ActivityBlockProps) => {
   // Define 4 pastel color themes
   const pastelColors = [
     {
@@ -116,13 +99,12 @@ const ActivityBlock = ({ activity, onEdit, onDelete, pixelsPerMinute, startMinut
 
   return (
     <div
-      ref={cardRef}
       className="absolute left-2 right-2 rounded-lg p-2 cursor-pointer group hover:shadow-md transition-all duration-200"
       style={{
         top: `${Math.max(20, topPosition)}px`,
         height: `${Math.max(40, height)}px`,
         zIndex: 10,
-        '--rotation': '4.2rad',
+        '--rotation': `${globalRotation}rad`,
         '--card-bg': colors.bg,
         '--card-accent': colors.accent,
         color: colors.text,

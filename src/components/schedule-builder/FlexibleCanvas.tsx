@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import ActivityBlock from './ActivityBlock';
 import ActivityModal from './ActivityModal';
 
@@ -21,12 +21,71 @@ interface FlexibleCanvasProps {
 const FlexibleCanvas = ({ selectedDay, activities, onUpdateActivities }: FlexibleCanvasProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const canvasRef = useRef<HTMLDivElement>(null);
 
   // Canvas configuration
   const startHour = 0;
   const endHour = 24;
   const pixelsPerHour = 60;
   const pixelsPerMinute = pixelsPerHour / 60;
+
+  // Global mouse tracking for edge glow effect
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (canvasRef.current) {
+        const rect = canvasRef.current.getBoundingClientRect();
+        setMousePosition({
+          x: e.clientX - rect.left,
+          y: e.clientY - rect.top
+        });
+      }
+    };
+
+    const handleMouseLeave = () => {
+      // Reset to center when mouse leaves canvas
+      if (canvasRef.current) {
+        const rect = canvasRef.current.getBoundingClientRect();
+        setMousePosition({
+          x: rect.width / 2,
+          y: rect.height / 2
+        });
+      }
+    };
+
+    const canvas = canvasRef.current;
+    if (canvas) {
+      canvas.addEventListener('mousemove', handleMouseMove);
+      canvas.addEventListener('mouseleave', handleMouseLeave);
+    }
+
+    return () => {
+      if (canvas) {
+        canvas.removeEventListener('mousemove', handleMouseMove);
+        canvas.removeEventListener('mouseleave', handleMouseLeave);
+      }
+    };
+  }, []);
+
+  const calculateRotationForActivity = (activity: Activity) => {
+    if (!canvasRef.current) return 4.2; // Default rotation
+
+    const [hours, minutes] = activity.startTime.split(':').map(Number);
+    const activityStartMinutes = hours * 60 + minutes;
+    const topPosition = (activityStartMinutes - startHour * 60) * pixelsPerMinute + 20;
+    const height = activity.duration * pixelsPerMinute;
+    
+    // Calculate center of the activity card
+    const cardCenterX = canvasRef.current.offsetWidth / 2; // Cards span most of the width
+    const cardCenterY = topPosition + height / 2;
+    
+    // Calculate angle from mouse position to card center
+    const deltaX = mousePosition.x - cardCenterX;
+    const deltaY = mousePosition.y - cardCenterY;
+    const angle = Math.atan2(-deltaX, deltaY);
+    
+    return angle;
+  };
 
   const generateTimeMarkers = () => {
     const markers = [];
@@ -87,6 +146,7 @@ const FlexibleCanvas = ({ selectedDay, activities, onUpdateActivities }: Flexibl
   return (
     <div className="relative">
       <div 
+        ref={canvasRef}
         className="relative bg-white border border-gray-200 rounded-lg overflow-hidden"
         style={{ height: `${canvasHeight}px`, paddingTop: '20px', paddingBottom: '20px' }}
       >
@@ -138,6 +198,7 @@ const FlexibleCanvas = ({ selectedDay, activities, onUpdateActivities }: Flexibl
             onDelete={handleDeleteActivity}
             pixelsPerMinute={pixelsPerMinute}
             startMinutes={startHour * 60}
+            globalRotation={calculateRotationForActivity(activity)}
           />
         ))}
 
