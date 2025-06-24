@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -22,13 +21,62 @@ interface ActivityBlockProps {
 }
 
 const ActivityBlock = ({ activity, onEdit, onDelete, pixelsPerMinute, startMinutes }: ActivityBlockProps) => {
-  const getCategoryColor = (category: Activity['category']) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  // Add mouse tracking for edge highlight effect
+  useEffect(() => {
+    const card = cardRef.current;
+    const handleMouseMove = (e: MouseEvent) => {
+      if (card) {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        const angle = Math.atan2(-x, y);
+        card.style.setProperty("--rotation", angle + "rad");
+      }
+    };
+    if (card) {
+      card.addEventListener("mousemove", handleMouseMove);
+    }
+    return () => {
+      if (card) {
+        card.removeEventListener("mousemove", handleMouseMove);
+      }
+    };
+  }, []);
+
+  const getCategoryColors = (category: Activity['category']) => {
     switch (category) {
-      case 'meal': return 'bg-orange-200 border-orange-300 text-orange-900';
-      case 'sightseeing': return 'bg-blue-200 border-blue-300 text-blue-900';
-      case 'transportation': return 'bg-gray-200 border-gray-300 text-gray-900';
-      case 'accommodation': return 'bg-green-200 border-green-300 text-green-900';
-      default: return 'bg-purple-200 border-purple-300 text-purple-900';
+      case 'meal': return { 
+        bg: '#fed7aa', 
+        border: '#fdba74', 
+        text: '#9a3412',
+        accent: '#ea580c'
+      };
+      case 'sightseeing': return { 
+        bg: '#bfdbfe', 
+        border: '#93c5fd', 
+        text: '#1e40af',
+        accent: '#2563eb'
+      };
+      case 'transportation': return { 
+        bg: '#e5e7eb', 
+        border: '#d1d5db', 
+        text: '#374151',
+        accent: '#6b7280'
+      };
+      case 'accommodation': return { 
+        bg: '#bbf7d0', 
+        border: '#86efac', 
+        text: '#166534',
+        accent: '#16a34a'
+      };
+      default: return { 
+        bg: '#e9d5ff', 
+        border: '#c4b5fd', 
+        text: '#7c3aed',
+        accent: '#8b5cf6'
+      };
     }
   };
 
@@ -64,17 +112,28 @@ const ActivityBlock = ({ activity, onEdit, onDelete, pixelsPerMinute, startMinut
   const topPosition = (activityStartMinutes - startMinutes) * pixelsPerMinute + 20; // Add 20px offset for padding
   const height = activity.duration * pixelsPerMinute;
 
+  const colors = getCategoryColors(activity.category);
+
   return (
     <div
-      className={cn(
-        "absolute left-2 right-2 border-2 rounded-lg p-2 cursor-pointer group hover:shadow-md transition-all duration-200",
-        getCategoryColor(activity.category)
-      )}
+      ref={cardRef}
+      className="absolute left-2 right-2 rounded-lg p-2 cursor-pointer group hover:shadow-md transition-all duration-200"
       style={{
         top: `${Math.max(20, topPosition)}px`,
         height: `${Math.max(40, height)}px`,
-        zIndex: 10
-      }}
+        zIndex: 10,
+        '--rotation': '4.2rad',
+        '--card-bg': colors.bg,
+        '--card-accent': colors.accent,
+        color: colors.text,
+        border: '2px solid transparent',
+        backgroundImage: `
+          linear-gradient(var(--card-bg), var(--card-bg)),
+          linear-gradient(calc(var(--rotation)), var(--card-accent) 0%, var(--card-bg) 30%, transparent 80%)
+        `,
+        backgroundOrigin: 'border-box',
+        backgroundClip: 'padding-box, border-box'
+      } as React.CSSProperties}
       onClick={() => onEdit(activity)}
     >
       <div className="flex items-start justify-between h-full">
