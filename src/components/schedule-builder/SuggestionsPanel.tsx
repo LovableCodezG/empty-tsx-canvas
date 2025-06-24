@@ -1,10 +1,12 @@
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, MapPin, Utensils } from 'lucide-react';
+import { Search, MapPin, Utensils, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import PlaceSuggestionCard from './PlaceSuggestionCard';
+import CustomActivityForm from './CustomActivityForm';
 
 interface Activity {
   id: string;
@@ -13,6 +15,7 @@ interface Activity {
   duration: number;
   category: 'meal' | 'sightseeing' | 'transportation' | 'accommodation' | 'other';
   notes?: string;
+  source?: 'custom' | 'place';
 }
 
 interface SuggestionsPanelProps {
@@ -22,7 +25,7 @@ interface SuggestionsPanelProps {
 }
 
 const SuggestionsPanel = ({ selectedDay, onAddActivity, existingActivities }: SuggestionsPanelProps) => {
-  const [activeTab, setActiveTab] = useState<'places' | 'restaurants'>('places');
+  const [activeTab, setActiveTab] = useState<'places' | 'restaurants' | 'custom'>('places');
   const [searchQuery, setSearchQuery] = useState('');
 
   // Dummy data - To be connected to Google Places API
@@ -116,41 +119,68 @@ const SuggestionsPanel = ({ selectedDay, onAddActivity, existingActivities }: Su
           <Utensils className="h-4 w-4" />
           Restaurants
         </Button>
+        <Button
+          variant={activeTab === 'custom' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setActiveTab('custom')}
+          className={cn(
+            "flex items-center gap-2",
+            activeTab === 'custom' 
+              ? "bg-spot-primary hover:bg-spot-primary/90" 
+              : ""
+          )}
+        >
+          <Plus className="h-4 w-4" />
+          Custom
+        </Button>
       </div>
 
-      <div className="relative mb-4">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-        <Input
-          placeholder="Search places..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="pl-10"
-        />
-      </div>
+      {/* Search Input - Only show for places and restaurants */}
+      {activeTab !== 'custom' && (
+        <div className="relative mb-4">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Input
+            placeholder="Search places..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+      )}
 
-      {/* Suggestions List */}
+      {/* Content */}
       <div className="flex-1 overflow-y-auto space-y-3 min-h-0">
-        {filteredData.map((place) => (
-          <PlaceSuggestionCard
-            key={place.id}
-            place={place}
+        {activeTab === 'custom' ? (
+          <CustomActivityForm
             selectedDay={selectedDay}
             onAddActivity={onAddActivity}
             existingActivities={existingActivities}
           />
-        ))}
-        
-        {showCustomPlaceMessage && (
-          <div className="text-center py-8">
-            <p className="text-gray-500 mb-3">No results found</p>
-            <Button
-              variant="link"
-              className="text-spot-primary hover:text-spot-primary/90"
-              onClick={() => console.log('Open custom place modal')}
-            >
-              Can't find it? Add a custom place to your schedule.
-            </Button>
-          </div>
+        ) : (
+          <>
+            {filteredData.map((place) => (
+              <PlaceSuggestionCard
+                key={place.id}
+                place={place}
+                selectedDay={selectedDay}
+                onAddActivity={onAddActivity}
+                existingActivities={existingActivities}
+              />
+            ))}
+            
+            {showCustomPlaceMessage && (
+              <div className="text-center py-8">
+                <p className="text-gray-500 mb-3">No results found</p>
+                <Button
+                  variant="link"
+                  className="text-spot-primary hover:text-spot-primary/90"
+                  onClick={() => setActiveTab('custom')}
+                >
+                  Can't find it? Add a custom place to your schedule.
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </motion.div>

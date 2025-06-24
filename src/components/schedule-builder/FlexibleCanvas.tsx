@@ -1,6 +1,9 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import ActivityBlock from './ActivityBlock';
 import ActivityModal from './ActivityModal';
+import CustomActivityEditModal from './CustomActivityEditModal';
+import PlaceActivityEditModal from './PlaceActivityEditModal';
 
 interface Activity {
   id: string;
@@ -10,6 +13,7 @@ interface Activity {
   category: 'meal' | 'sightseeing' | 'transportation' | 'accommodation' | 'other';
   notes?: string;
   colorIndex?: number;
+  source?: 'custom' | 'place';
 }
 
 interface FlexibleCanvasProps {
@@ -20,6 +24,8 @@ interface FlexibleCanvasProps {
 
 const FlexibleCanvas = ({ selectedDay, activities, onUpdateActivities }: FlexibleCanvasProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCustomEditModalOpen, setIsCustomEditModalOpen] = useState(false);
+  const [isPlaceEditModalOpen, setIsPlaceEditModalOpen] = useState(false);
   const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -128,7 +134,14 @@ const FlexibleCanvas = ({ selectedDay, activities, onUpdateActivities }: Flexibl
 
   const handleEditActivity = (activity: Activity) => {
     setEditingActivity(activity);
-    setIsModalOpen(true);
+    
+    // Determine which edit modal to open based on activity source
+    if (activity.source === 'custom') {
+      setIsCustomEditModalOpen(true);
+    } else {
+      // For place/restaurant activities, use the limited edit modal
+      setIsPlaceEditModalOpen(true);
+    }
   };
 
   const handleDeleteActivity = (activityId: string) => {
@@ -212,6 +225,7 @@ const FlexibleCanvas = ({ selectedDay, activities, onUpdateActivities }: Flexibl
         )}
       </div>
 
+      {/* Regular Activity Modal (for new activities) */}
       <ActivityModal
         isOpen={isModalOpen}
         onClose={() => {
@@ -221,6 +235,34 @@ const FlexibleCanvas = ({ selectedDay, activities, onUpdateActivities }: Flexibl
         onSave={handleSaveActivity}
         existingActivity={editingActivity || undefined}
       />
+
+      {/* Custom Activity Edit Modal */}
+      {editingActivity && (
+        <CustomActivityEditModal
+          isOpen={isCustomEditModalOpen}
+          onClose={() => {
+            setIsCustomEditModalOpen(false);
+            setEditingActivity(null);
+          }}
+          onSave={handleSaveActivity}
+          existingActivity={editingActivity}
+          existingActivities={dayActivities}
+        />
+      )}
+
+      {/* Place Activity Edit Modal */}
+      {editingActivity && (
+        <PlaceActivityEditModal
+          isOpen={isPlaceEditModalOpen}
+          onClose={() => {
+            setIsPlaceEditModalOpen(false);
+            setEditingActivity(null);
+          }}
+          onSave={handleSaveActivity}
+          existingActivity={editingActivity}
+          existingActivities={dayActivities}
+        />
+      )}
     </div>
   );
 };
