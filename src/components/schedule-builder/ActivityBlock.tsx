@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect } from 'react';
 import { Edit, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,7 @@ interface Activity {
   duration: number;
   category: 'meal' | 'sightseeing' | 'transportation' | 'accommodation' | 'other';
   notes?: string;
+  colorIndex?: number;
 }
 
 interface ActivityBlockProps {
@@ -45,39 +47,37 @@ const ActivityBlock = ({ activity, onEdit, onDelete, pixelsPerMinute, startMinut
     };
   }, []);
 
-  const getCategoryColors = (category: Activity['category']) => {
-    switch (category) {
-      case 'meal': return { 
-        bg: '#fed7aa', 
-        border: '#fdba74', 
-        text: '#9a3412',
-        accent: '#ea580c'
-      };
-      case 'sightseeing': return { 
-        bg: '#bfdbfe', 
-        border: '#93c5fd', 
-        text: '#1e40af',
-        accent: '#2563eb'
-      };
-      case 'transportation': return { 
-        bg: '#e5e7eb', 
-        border: '#d1d5db', 
-        text: '#374151',
-        accent: '#6b7280'
-      };
-      case 'accommodation': return { 
-        bg: '#bbf7d0', 
-        border: '#86efac', 
-        text: '#166534',
-        accent: '#16a34a'
-      };
-      default: return { 
-        bg: '#e9d5ff', 
-        border: '#c4b5fd', 
-        text: '#7c3aed',
-        accent: '#8b5cf6'
-      };
+  // Define 4 pastel color themes
+  const pastelColors = [
+    {
+      bg: '#f0fdf4', // Mint green
+      border: '#bbf7d0',
+      text: '#166534',
+      accent: '#22c55e'
+    },
+    {
+      bg: '#faf5ff', // Lavender
+      border: '#e9d5ff',
+      text: '#7c3aed',
+      accent: '#a855f7'
+    },
+    {
+      bg: '#fff7ed', // Peach
+      border: '#fed7aa',
+      text: '#ea580c',
+      accent: '#f97316'
+    },
+    {
+      bg: '#f0f9ff', // Sky blue
+      border: '#bfdbfe',
+      text: '#2563eb',
+      accent: '#3b82f6'
     }
+  ];
+
+  const getActivityColors = () => {
+    const colorIndex = activity.colorIndex ?? 0;
+    return pastelColors[colorIndex % pastelColors.length];
   };
 
   const getCategoryIcon = (category: Activity['category']) => {
@@ -112,7 +112,7 @@ const ActivityBlock = ({ activity, onEdit, onDelete, pixelsPerMinute, startMinut
   const topPosition = (activityStartMinutes - startMinutes) * pixelsPerMinute + 20; // Add 20px offset for padding
   const height = activity.duration * pixelsPerMinute;
 
-  const colors = getCategoryColors(activity.category);
+  const colors = getActivityColors();
 
   return (
     <div

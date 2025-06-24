@@ -47,7 +47,8 @@ const FlexibleCanvas = ({ selectedDay, activities, onUpdateActivities }: Flexibl
   const handleSaveActivity = (activityData: Omit<Activity, 'id'>) => {
     const newActivity: Activity = {
       ...activityData,
-      id: editingActivity?.id || Date.now().toString()
+      id: editingActivity?.id || Date.now().toString(),
+      colorIndex: editingActivity?.colorIndex ?? Math.floor(Math.random() * 4) // Keep existing color or assign random
     };
 
     onUpdateActivities(prev => {

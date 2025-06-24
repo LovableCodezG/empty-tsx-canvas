@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +19,7 @@ interface Activity {
   duration: number;
   category: 'meal' | 'sightseeing' | 'transportation' | 'accommodation' | 'other';
   notes?: string;
+  colorIndex?: number;
 }
 
 const ScheduleBuilderContent = () => {
@@ -53,7 +53,8 @@ const ScheduleBuilderContent = () => {
     
     const newActivity: Activity = {
       ...activity,
-      id: Date.now().toString()
+      id: Date.now().toString(),
+      colorIndex: Math.floor(Math.random() * 4) // Random color index 0-3
     };
 
     setActivities(prev => {

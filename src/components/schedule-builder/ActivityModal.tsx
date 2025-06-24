@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Clock, MapPin } from 'lucide-react';
 import {
@@ -19,6 +18,7 @@ interface Activity {
   duration: number;
   category: 'meal' | 'sightseeing' | 'transportation' | 'accommodation' | 'other';
   notes?: string;
+  colorIndex?: number;
 }
 
 interface ActivityModalProps {
