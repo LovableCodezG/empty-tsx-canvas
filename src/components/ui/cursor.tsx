@@ -36,12 +36,11 @@ type CursorProviderProps = React.ComponentProps<'div'> & {
   children: React.ReactNode;
 };
 
-function CursorProvider({ ref, children, ...props }: CursorProviderProps) {
+function CursorProvider({ children, ...props }: CursorProviderProps) {
   const [cursorPos, setCursorPos] = React.useState({ x: 0, y: 0 });
   const [isActive, setIsActive] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const cursorRef = React.useRef<HTMLDivElement>(null);
-  React.useImperativeHandle(ref, () => containerRef.current as HTMLDivElement);
 
   React.useEffect(() => {
     if (!containerRef.current) return;
@@ -84,9 +83,8 @@ type CursorProps = HTMLMotionProps<'div'> & {
   children: React.ReactNode;
 };
 
-function Cursor({ ref, children, className, style, ...props }: CursorProps) {
+function Cursor({ children, className, style, ...props }: CursorProps) {
   const { cursorPos, isActive, containerRef, cursorRef } = useCursor();
-  React.useImperativeHandle(ref, () => cursorRef.current as HTMLDivElement);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -148,7 +146,6 @@ type CursorFollowProps = HTMLMotionProps<'div'> & {
 };
 
 function CursorFollow({
-  ref,
   sideOffset = 15,
   align = 'bottom-right',
   children,
@@ -159,10 +156,6 @@ function CursorFollow({
 }: CursorFollowProps) {
   const { cursorPos, isActive, cursorRef } = useCursor();
   const cursorFollowRef = React.useRef<HTMLDivElement>(null);
-  React.useImperativeHandle(
-    ref,
-    () => cursorFollowRef.current as HTMLDivElement,
-  );
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);

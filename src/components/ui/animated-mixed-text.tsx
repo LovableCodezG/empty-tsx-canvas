@@ -61,10 +61,6 @@ const AnimatedMixedText: React.FC<AnimatedMixedTextProps> = ({
       filter: "blur(0px)",
       opacity: 1,
       y: 0,
-      transition: {
-        duration: 0.3, // Reduced from 0.5 for faster animation
-        ease: "easeOut",
-      },
     },
   };
 
@@ -92,6 +88,10 @@ const AnimatedMixedText: React.FC<AnimatedMixedTextProps> = ({
         <motion.span
           key={index}
           variants={wordVariants}
+          transition={{
+            duration: 0.3, // Reduced from 0.5 for faster animation
+            ease: "easeOut",
+          }}
           className={`inline-block mr-2 ${item.className || ""}`}
           style={{
             willChange: "transform, filter, opacity",

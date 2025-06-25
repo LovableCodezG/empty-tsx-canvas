@@ -31,11 +31,7 @@ const DemoPreviewSection = () => {
     visible: { 
       opacity: 1, 
       y: 0,
-      filter: "blur(0px)",
-      transition: {
-        duration: 0.6,
-        ease: "easeOut"
-      }
+      filter: "blur(0px)"
     },
   };
 
@@ -53,18 +49,23 @@ const DemoPreviewSection = () => {
           <motion.h2 
             className="text-4xl md:text-5xl font-bold text-gray-800 mb-3"
             variants={itemVariants}
+            transition={{ duration: 0.6, ease: "easeOut" }}
           >
             See SpotPlan in Action
           </motion.h2>
           <motion.p 
             className="text-xl text-gray-600 max-w-2xl mx-auto"
             variants={itemVariants}
+            transition={{ duration: 0.6, ease: "easeOut" }}
           >
             Watch how easy it is to plan your perfect trip with our intelligent platform
           </motion.p>
         </motion.div>
 
-        <motion.div variants={itemVariants}>
+        <motion.div 
+          variants={itemVariants}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
           <Card className="relative overflow-hidden shadow-2xl border-0 group">
             <div className="aspect-video bg-gradient-to-br from-spot-sky to-spot-blue relative">
               <AnimatePresence mode="wait">
