@@ -2,6 +2,7 @@
 import { WorldMap } from "@/components/ui/world-map";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import { TripCreationProvider } from "@/contexts/TripCreationContext";
 import TripSearchForm from "../TripSearchForm";
 import { MacbookPro } from "@/components/ui/macbook-pro";
 import Header from "@/components/shared/Header";
@@ -78,7 +79,9 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
         >
-          <TripSearchForm />
+          <TripCreationProvider>
+            <TripSearchForm />
+          </TripCreationProvider>
         </motion.div>
 
         {/* Hero MacBook with Video */}
