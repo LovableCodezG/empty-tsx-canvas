@@ -177,27 +177,32 @@ const Footer = () => {
                 >
                   <h4 className="text-lg font-semibold mb-4 text-spot-beige">Product</h4>
                   <ul className="space-y-2">
-                    {[
-                      { name: "Features", link: "/features" },
-                      { name: "Pricing", link: "/pricing" },
-                      { name: "How it Works", link: "/#how-it-works" },
-                      { name: "Reviews", link: "/#reviews" }
-                    ].map((item, index) => (
-                      <motion.li 
-                        key={item.name}
-                        initial={{ opacity: 0, x: -10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.4, delay: 0.7 + index * 0.1 }}
-                        viewport={{ once: true }}
+                    <motion.li 
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.4, delay: 0.7 }}
+                      viewport={{ once: true }}
+                    >
+                      <Link 
+                        to="/#how-it-works" 
+                        className="text-white/80 hover:text-spot-beige transition-colors hover:underline"
                       >
-                        <Link 
-                          to={item.link} 
-                          className="text-white/80 hover:text-spot-beige transition-colors hover:underline"
-                        >
-                          {item.name}
-                        </Link>
-                      </motion.li>
-                    ))}
+                        How it Works
+                      </Link>
+                    </motion.li>
+                    <motion.li 
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.4, delay: 0.8 }}
+                      viewport={{ once: true }}
+                    >
+                      <Link 
+                        to="/#reviews" 
+                        className="text-white/80 hover:text-spot-beige transition-colors hover:underline"
+                      >
+                        Reviews
+                      </Link>
+                    </motion.li>
                   </ul>
                 </motion.div>
 
@@ -210,27 +215,36 @@ const Footer = () => {
                 >
                   <h4 className="text-lg font-semibold mb-4 text-spot-beige">Company</h4>
                   <ul className="space-y-2">
-                    {[
-                      { name: "About", link: "/about" },
-                      { name: "Terms", link: "/terms" },
-                      { name: "Privacy", link: "/privacy-policy" },
-                      { name: "Contact", link: "/contact" }
-                    ].map((item, index) => (
-                      <motion.li 
-                        key={item.name}
-                        initial={{ opacity: 0, x: -10 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.4, delay: 0.8 + index * 0.1 }}
-                        viewport={{ once: true }}
-                      >
-                        <Link 
-                          to={item.link} 
-                          className="text-white/80 hover:text-spot-beige transition-colors hover:underline"
-                        >
-                          {item.name}
-                        </Link>
-                      </motion.li>
-                    ))}
+                    <motion.li 
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.4, delay: 0.8 }}
+                      viewport={{ once: true }}
+                    >
+                      <Link to="/about" className="text-white/80 hover:text-spot-beige transition-colors hover:underline">
+                        About
+                      </Link>
+                    </motion.li>
+                    <motion.li 
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.4, delay: 0.9 }}
+                      viewport={{ once: true }}
+                    >
+                      <Link to="/terms" className="text-white/80 hover:text-spot-beige transition-colors hover:underline">
+                        Terms
+                      </Link>
+                    </motion.li>
+                    <motion.li 
+                      initial={{ opacity: 0, x: -10 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.4, delay: 1.0 }}
+                      viewport={{ once: true }}
+                    >
+                      <Link to="/privacy-policy" className="text-white/80 hover:text-spot-beige transition-colors hover:underline">
+                        Privacy
+                      </Link>
+                    </motion.li>
                   </ul>
                 </motion.div>
               </motion.div>

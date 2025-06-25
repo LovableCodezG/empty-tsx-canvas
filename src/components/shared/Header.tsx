@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ExpandableTabs } from "@/components/ui/expandable-tabs";
-import { Home, User, FileText, Star, DollarSign, Mail } from "lucide-react";
+import { Home, User, FileText } from "lucide-react";
 
 interface HeaderProps {
   theme?: "light" | "dark";
@@ -16,10 +16,7 @@ const Header = ({ theme = "light" }: HeaderProps) => {
   
   const tabs = [
     { title: "Home", icon: Home },
-    { title: "Features", icon: Star },
-    { title: "Pricing", icon: DollarSign },
     { title: "About", icon: User },
-    { title: "Contact", icon: Mail },
     { title: "Privacy", icon: FileText },
   ];
 
@@ -28,16 +25,10 @@ const Header = ({ theme = "light" }: HeaderProps) => {
     switch (location.pathname) {
       case "/":
         return 0; // Home
-      case "/features":
-        return 1; // Features
-      case "/pricing":
-        return 2; // Pricing
       case "/about":
-        return 3; // About
-      case "/contact":
-        return 4; // Contact
+        return 1; // About
       case "/privacy-policy":
-        return 5; // Privacy
+        return 2; // Privacy
       default:
         return null;
     }
@@ -50,18 +41,9 @@ const Header = ({ theme = "light" }: HeaderProps) => {
           navigate("/");
           break;
         case 1:
-          navigate("/features");
-          break;
-        case 2:
-          navigate("/pricing");
-          break;
-        case 3:
           navigate("/about");
           break;
-        case 4:
-          navigate("/contact");
-          break;
-        case 5:
+        case 2:
           navigate("/privacy-policy");
           break;
       }
