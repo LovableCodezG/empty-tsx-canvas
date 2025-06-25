@@ -2,8 +2,10 @@
 import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTripCreation } from '@/contexts/TripCreationContext';
+import { convertTripCreationToSavedTrip, saveTrip } from '@/utils/tripStorage';
 import TripCreationCloseButton from '@/components/trip-creation/TripCreationCloseButton';
 import OverviewHeader from '@/components/trip-creation/overview/OverviewHeader';
+import TripNameSection from '@/components/trip-creation/overview/TripNameSection';
 import TripItinerarySection from '@/components/trip-creation/overview/TripItinerarySection';
 import CostSummarySection from '@/components/trip-creation/overview/CostSummarySection';
 import TripChecklistSection from '@/components/trip-creation/overview/TripChecklistSection';
@@ -11,7 +13,7 @@ import GroupMembersSection from '@/components/trip-creation/overview/GroupMember
 import ShareTripSection from '@/components/trip-creation/overview/ShareTripSection';
 
 const CreateTripOverviewPage = () => {
-  const { state } = useTripCreation();
+  const { state, dispatch } = useTripCreation();
   const navigate = useNavigate();
   const shareRef = useRef<HTMLDivElement>(null);
 
@@ -52,8 +54,35 @@ const CreateTripOverviewPage = () => {
   };
 
   const handleFinishClick = () => {
-    console.log('Trip creation completed, navigating to dashboard');
-    navigate('/dashboard');
+    // Validate trip name is provided
+    if (!state.tripName.trim()) {
+      // Focus on trip name input
+      const tripNameInput = document.querySelector('input[type="text"]') as HTMLInputElement;
+      if (tripNameInput) {
+        tripNameInput.focus();
+        tripNameInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
+
+    try {
+      // Convert trip creation state to saved trip format
+      const savedTrip = convertTripCreationToSavedTrip(state);
+      
+      // Save trip to local storage
+      saveTrip(savedTrip);
+      
+      console.log('Trip saved successfully:', savedTrip);
+      
+      // Reset trip creation state
+      dispatch({ type: 'RESET' });
+      
+      // Navigate to dashboard
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Failed to save trip:', error);
+      // Could show error toast here
+    }
   };
 
   // Early return if validation is failing (while redirect is happening)
@@ -77,6 +106,9 @@ const CreateTripOverviewPage = () => {
     (state.transportMode === 'rental' && state.rentalCostPerDay && state.rentalCostPerDay > 0)
   );
 
+  // Check if can finish (all validation + trip name)
+  const canFinish = hasValidDestination && hasValidTransport && state.tripName.trim().length > 0;
+
   if (!hasValidDestination || !hasValidTransport) {
     return null; // Don't render anything while redirecting
   }
@@ -90,9 +122,11 @@ const CreateTripOverviewPage = () => {
           onShareClick={handleShareClick}
           onEditClick={handleEditClick}
           onFinishClick={handleFinishClick}
+          canFinish={canFinish}
         />
         
         <div className="max-w-4xl mx-auto space-y-8">
+          <TripNameSection />
           <TripItinerarySection />
           <CostSummarySection />
           <TripChecklistSection />

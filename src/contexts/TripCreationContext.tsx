@@ -52,6 +52,7 @@ export interface TripCreationState {
   tripType: 'group' | 'personal' | null;
   destinationType: 'domestic' | 'international' | null;
   selectedCountry: string | null;
+  tripName: string;
   groupSize: number;
   groupMembers: GroupMember[];
   currentStep: number;
@@ -90,6 +91,7 @@ type TripCreationAction =
   | { type: 'SET_TRIP_TYPE'; payload: 'group' | 'personal' }
   | { type: 'SET_DESTINATION_TYPE'; payload: 'domestic' | 'international' }
   | { type: 'SET_SELECTED_COUNTRY'; payload: string }
+  | { type: 'SET_TRIP_NAME'; payload: string }
   | { type: 'SET_GROUP_SIZE'; payload: number }
   | { type: 'SET_GROUP_MEMBERS'; payload: GroupMember[] }
   | { type: 'SET_CURRENT_STEP'; payload: number }
@@ -120,6 +122,7 @@ const initialState: TripCreationState = {
   tripType: null,
   destinationType: null,
   selectedCountry: null,
+  tripName: '',
   groupSize: 2,
   groupMembers: [],
   currentStep: 1,
@@ -160,6 +163,8 @@ const tripCreationReducer = (state: TripCreationState, action: TripCreationActio
       return { ...state, destinationType: action.payload };
     case 'SET_SELECTED_COUNTRY':
       return { ...state, selectedCountry: action.payload };
+    case 'SET_TRIP_NAME':
+      return { ...state, tripName: action.payload };
     case 'SET_GROUP_SIZE':
       return { ...state, groupSize: action.payload };
     case 'SET_GROUP_MEMBERS':

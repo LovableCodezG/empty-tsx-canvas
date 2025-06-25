@@ -6,10 +6,11 @@ import { AnimatedTooltip } from '@/components/ui/animated-tooltip';
 import { Button } from '@/components/ui/button';
 import { Share, Edit, CheckCircle } from 'lucide-react';
 
-const OverviewHeader = ({ onShareClick, onEditClick, onFinishClick }: {
+const OverviewHeader = ({ onShareClick, onEditClick, onFinishClick, canFinish = true }: {
   onShareClick: () => void;
   onEditClick: () => void;
   onFinishClick: () => void;
+  canFinish?: boolean;
 }) => {
   const { state } = useTripCreation();
 
@@ -73,12 +74,19 @@ const OverviewHeader = ({ onShareClick, onEditClick, onFinishClick }: {
         <Button
           id="finish-trip-button"
           onClick={onFinishClick}
-          className="flex items-center gap-2 bg-spot-primary hover:bg-spot-primary/90"
+          disabled={!canFinish}
+          className="flex items-center gap-2 bg-spot-primary hover:bg-spot-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <CheckCircle className="h-4 w-4" />
           Finish & Go to Dashboard
         </Button>
       </div>
+
+      {!canFinish && (
+        <p className="text-sm text-red-600 mt-2">
+          Please provide a trip name to continue
+        </p>
+      )}
 
       {/* Bolt injection comment */}
       {/* Bolt injects trip metadata + trip type here (Group/Solo) */}
