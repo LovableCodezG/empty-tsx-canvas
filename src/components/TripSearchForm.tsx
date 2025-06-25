@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -105,11 +104,12 @@ const TripSearchForm = () => {
         startDate: searchData.startDate,
         endDate: searchData.endDate,
         dateRange: searchData.dateRange,
-        totalTravelers
+        totalTravelers,
+        fromSearchFlow: true
       }
     });
 
-    console.log("Context populated, navigating to schedule page...");
+    console.log("Context populated with fromSearchFlow: true, navigating to schedule page...");
 
     // Small delay to ensure context is updated before navigation
     setTimeout(() => {
