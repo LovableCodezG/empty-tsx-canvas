@@ -1,14 +1,12 @@
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { MapPin, Plus } from "lucide-react";
 import { useState } from "react";
 import { DateRange } from "react-day-picker";
-import { useNavigate } from "react-router-dom";
 import { DatePickerInput } from "./DatePickerInput";
 import { TravelerSelector } from "./TravelerSelector";
-import { useTripCreation } from "@/contexts/TripCreationContext";
-import countries from "@/data/countries.json";
 
 interface TravelerData {
   adults: number;
@@ -26,9 +24,6 @@ interface SearchData {
 }
 
 const TripSearchForm = () => {
-  const navigate = useNavigate();
-  const { dispatch } = useTripCreation();
-  
   const [searchData, setSearchData] = useState<SearchData>({
     destination: "",
     dateType: "single",
@@ -44,23 +39,6 @@ const TripSearchForm = () => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validate required fields
-    if (!searchData.destination.trim()) {
-      console.log("Destination is required");
-      return;
-    }
-    
-    const hasValidDates = searchData.dateType && (
-      (searchData.dateType === "single" && searchData.startDate) ||
-      (searchData.dateType === "range" && searchData.dateRange?.from)
-    );
-    
-    if (!hasValidDates) {
-      console.log("Valid dates are required");
-      return;
-    }
-
     console.log("Search data for backend:", {
       destination: searchData.destination,
       dateType: searchData.dateType,
@@ -73,44 +51,7 @@ const TripSearchForm = () => {
       totalTravelers: searchData.travelers.adults + searchData.travelers.children + searchData.travelers.infants,
       travelerBreakdown: searchData.travelers
     });
-
-    // Pre-populate trip creation context with search data
-    const totalTravelers = searchData.travelers.adults + searchData.travelers.children + searchData.travelers.infants;
-    
-    // Determine trip type based on traveler count
-    const tripType = totalTravelers > 1 ? 'group' : 'personal';
-    dispatch({ type: 'SET_TRIP_TYPE', payload: tripType });
-    dispatch({ type: 'SET_GROUP_SIZE', payload: totalTravelers });
-    
-    // Set destination - check if it matches a known country
-    const matchingCountry = countries.find(country => 
-      country.name.toLowerCase().includes(searchData.destination.toLowerCase()) ||
-      searchData.destination.toLowerCase().includes(country.name.toLowerCase())
-    );
-    
-    if (matchingCountry) {
-      dispatch({ type: 'SET_DESTINATION_TYPE', payload: 'international' });
-      dispatch({ type: 'SET_SELECTED_COUNTRY', payload: matchingCountry.name });
-    } else {
-      dispatch({ type: 'SET_DESTINATION_TYPE', payload: 'domestic' });
-    }
-    
-    // Set dates
-    dispatch({ 
-      type: 'SET_TRIP_DATES', 
-      payload: {
-        dateType: searchData.dateType,
-        startDate: searchData.startDate,
-        endDate: searchData.endDate,
-        dateRange: searchData.dateRange
-      }
-    });
-    
-    // Mark as coming from search flow
-    dispatch({ type: 'SET_FROM_SEARCH_FLOW', payload: true });
-    
-    // Navigate to schedule builder (skipping destination page)
-    navigate('/create-trip/schedule');
+    // TODO: Connect to backend API endpoint for trip planning
   };
 
   const updateSearchData = (updates: Partial<SearchData>) => {
