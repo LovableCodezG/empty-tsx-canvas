@@ -140,7 +140,7 @@ const HeroSection = () => {
                   muted
                   playsInline
                 >
-                  <source src="/images/landingpage/herovideo.mp4" type="video/mp4" />
+                  <source src="/images/landingpage/herovideo.webm" type="video/webm" />
                   Your browser does not support the video tag.
                 </video>
               </MacbookPro>
