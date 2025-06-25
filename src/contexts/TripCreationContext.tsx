@@ -120,7 +120,7 @@ const initialState: TripCreationState = {
   tripType: null,
   destinationType: null,
   selectedCountry: null,
-  groupSize: 1,
+  groupSize: 2,
   groupMembers: [],
   currentStep: 1,
   dateType: null,
@@ -151,8 +151,10 @@ const tripCreationReducer = (state: TripCreationState, action: TripCreationActio
       return { 
         ...state, 
         tripType: action.payload,
+        // Set default group size to 2 when switching to group, reset to 1 for personal
+        groupSize: action.payload === 'group' ? 2 : 1,
         // Reset group data when switching away from group
-        ...(action.payload === 'personal' && { groupSize: 1, groupMembers: [] })
+        ...(action.payload === 'personal' && { groupMembers: [] })
       };
     case 'SET_DESTINATION_TYPE':
       return { ...state, destinationType: action.payload };

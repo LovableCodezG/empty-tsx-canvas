@@ -29,9 +29,7 @@ const CreateTripOverviewPage = () => {
       (state.destinationType === 'international' && state.selectedCountry)
     ) && (
       state.tripType === 'personal' || 
-      (state.tripType === 'group' && state.groupMembers.every(member => 
-        member.name.trim() !== '' && member.email.trim() !== ''
-      ))
+      (state.tripType === 'group' && state.groupSize >= 2)
     );
 
     const hasValidTransport = state.transportMode !== null && (
@@ -71,9 +69,7 @@ const CreateTripOverviewPage = () => {
     (state.destinationType === 'international' && state.selectedCountry)
   ) && (
     state.tripType === 'personal' || 
-    (state.tripType === 'group' && state.groupMembers.every(member => 
-      member.name.trim() !== '' && member.email.trim() !== ''
-    ))
+    (state.tripType === 'group' && state.groupSize >= 2)
   );
 
   const hasValidTransport = state.transportMode !== null && (

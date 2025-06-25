@@ -4,7 +4,6 @@ import { motion } from 'framer-motion';
 import TripDateSelector from './TripDateSelector';
 import TripTypeToggle from './TripTypeToggle';
 import GroupSizeSelector from './GroupSizeSelector';
-import GroupMembersInput from './GroupMembersInput';
 import DestinationTypeToggle from './DestinationTypeToggle';
 import CountrySelector from './CountrySelector';
 import FlightReminder from './FlightReminder';
@@ -20,7 +19,6 @@ const DestinationInputPanel = () => {
       <TripDateSelector />
       <TripTypeToggle />
       <GroupSizeSelector />
-      <GroupMembersInput />
       <DestinationTypeToggle />
       <CountrySelector />
       <FlightReminder />

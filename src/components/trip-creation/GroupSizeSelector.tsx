@@ -25,11 +25,12 @@ const GroupSizeSelector = () => {
           onChange={(e) => handleGroupSizeChange(Number(e.target.value))}
           className="w-full appearance-none bg-white border-2 border-gray-200 rounded-lg px-4 py-3 pr-10 focus:outline-none focus:ring-2 focus:ring-spot-primary focus:border-transparent transition-all duration-200"
         >
-          {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
+          {Array.from({ length: 9 }, (_, i) => i + 2).map((num) => (
             <option key={num} value={num}>
-              {num} {num === 1 ? 'person' : 'people'}
+              {num} people
             </option>
           ))}
+          <option value={11}>10 or above</option>
         </select>
         <Users className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
       </div>
