@@ -1,7 +1,7 @@
-
 import { Card } from "@/components/ui/card";
 import { Twitter, Instagram, Facebook, Linkedin } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import socialData from "@/data/social.json";
 
 const iconMap = {
@@ -101,14 +101,16 @@ const Footer = () => {
                   unique travel style.
                 </p>
                 
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-lg transition-all duration-300"
-                  style={{ backgroundColor: '#84cc16' }}
-                >
-                   Discover Now
-                </motion.button>
+                <Link to="/signup">
+                  <motion.button
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="text-white px-8 py-4 rounded-full text-lg font-semibold hover:shadow-lg transition-all duration-300"
+                    style={{ backgroundColor: '#84cc16' }}
+                  >
+                     Discover Now
+                  </motion.button>
+                </Link>
               </motion.div>
 
               {/* Footer Links Grid */}
@@ -166,7 +168,7 @@ const Footer = () => {
                   </div>
                 </div>
 
-                {/* Quick links */}
+                {/* Product links */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -175,17 +177,25 @@ const Footer = () => {
                 >
                   <h4 className="text-lg font-semibold mb-4 text-spot-beige">Product</h4>
                   <ul className="space-y-2">
-                    {["Features", "Pricing", "How it Works", "Reviews"].map((link, index) => (
+                    {[
+                      { name: "Features", link: "/features" },
+                      { name: "Pricing", link: "/pricing" },
+                      { name: "How it Works", link: "/#how-it-works" },
+                      { name: "Reviews", link: "/#reviews" }
+                    ].map((item, index) => (
                       <motion.li 
-                        key={link}
+                        key={item.name}
                         initial={{ opacity: 0, x: -10 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.4, delay: 0.7 + index * 0.1 }}
                         viewport={{ once: true }}
                       >
-                        <a href="#" className="text-white/80 hover:text-spot-beige transition-colors hover:underline">
-                          {link}
-                        </a>
+                        <Link 
+                          to={item.link} 
+                          className="text-white/80 hover:text-spot-beige transition-colors hover:underline"
+                        >
+                          {item.name}
+                        </Link>
                       </motion.li>
                     ))}
                   </ul>
@@ -200,17 +210,25 @@ const Footer = () => {
                 >
                   <h4 className="text-lg font-semibold mb-4 text-spot-beige">Company</h4>
                   <ul className="space-y-2">
-                    {["About", "Terms", "Privacy", "Contact"].map((link, index) => (
+                    {[
+                      { name: "About", link: "/about" },
+                      { name: "Terms", link: "/terms" },
+                      { name: "Privacy", link: "/privacy-policy" },
+                      { name: "Contact", link: "/contact" }
+                    ].map((item, index) => (
                       <motion.li 
-                        key={link}
+                        key={item.name}
                         initial={{ opacity: 0, x: -10 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.4, delay: 0.8 + index * 0.1 }}
                         viewport={{ once: true }}
                       >
-                        <a href="#" className="text-white/80 hover:text-spot-beige transition-colors hover:underline">
-                          {link}
-                        </a>
+                        <Link 
+                          to={item.link} 
+                          className="text-white/80 hover:text-spot-beige transition-colors hover:underline"
+                        >
+                          {item.name}
+                        </Link>
                       </motion.li>
                     ))}
                   </ul>
