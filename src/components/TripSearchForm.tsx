@@ -1,13 +1,12 @@
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { MapPin, Plus } from "lucide-react";
-import { useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { DateRange } from "react-day-picker";
 import { DatePickerInput } from "./DatePickerInput";
 import { TravelerSelector } from "./TravelerSelector";
-import { useTripCreation } from "@/contexts/TripCreationContext";
 
 interface TravelerData {
   adults: number;
@@ -25,9 +24,6 @@ interface SearchData {
 }
 
 const TripSearchForm = () => {
-  const navigate = useNavigate();
-  const { dispatch } = useTripCreation();
-  
   const [searchData, setSearchData] = useState<SearchData>({
     destination: "",
     dateType: "single",
@@ -41,48 +37,9 @@ const TripSearchForm = () => {
     }
   });
 
-  // NOTE: Search bar only works if the user is logged in.
-  // If not logged in, redirect to login page before continuing.
-  // for BOLT.new to check
-  const checkUserAuthStatus = (): boolean => {
-    // TODO: Implement proper authentication check
-    // For now, return true to maintain current functionality
-    // This should check actual user session/token
-    return true;
-  };
-
-  // NOTE: This flow skips destination page if user starts planning from search bar.
-  // Ensure destination and dates are stored before navigation to avoid redirect.
-  const handleSearch = useCallback((e: React.FormEvent) => {
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Check if user is logged in
-    const isLoggedIn = checkUserAuthStatus();
-    if (!isLoggedIn) {
-      console.log("User not logged in, redirecting to login page");
-      navigate('/login');
-      return;
-    }
-    
-    // Validate required fields
-    if (!searchData.destination.trim()) {
-      console.log("Destination is required");
-      return;
-    }
-    
-    const hasValidDates = searchData.dateType && (
-      (searchData.dateType === 'single' && searchData.startDate) ||
-      (searchData.dateType === 'range' && searchData.dateRange?.from)
-    );
-    
-    if (!hasValidDates) {
-      console.log("Valid dates are required");
-      return;
-    }
-
-    const totalTravelers = searchData.travelers.adults + searchData.travelers.children + searchData.travelers.infants;
-    
-    console.log("Search data for trip creation:", {
+    console.log("Search data for backend:", {
       destination: searchData.destination,
       dateType: searchData.dateType,
       startDate: searchData.startDate?.toISOString(),
@@ -91,31 +48,11 @@ const TripSearchForm = () => {
         from: searchData.dateRange.from?.toISOString(),
         to: searchData.dateRange.to?.toISOString()
       } : null,
-      totalTravelers,
+      totalTravelers: searchData.travelers.adults + searchData.travelers.children + searchData.travelers.infants,
       travelerBreakdown: searchData.travelers
     });
-
-    // Populate trip creation context with search data BEFORE navigation
-    dispatch({
-      type: 'POPULATE_FROM_SEARCH',
-      payload: {
-        destination: searchData.destination,
-        dateType: searchData.dateType,
-        startDate: searchData.startDate,
-        endDate: searchData.endDate,
-        dateRange: searchData.dateRange,
-        totalTravelers,
-        fromSearchFlow: true
-      }
-    });
-
-    console.log("Context populated with fromSearchFlow: true, navigating to schedule page...");
-
-    // Small delay to ensure context is updated before navigation
-    setTimeout(() => {
-      navigate('/create-trip/schedule');
-    }, 100);
-  }, [searchData, dispatch, navigate]);
+    // TODO: Connect to backend API endpoint for trip planning
+  };
 
   const updateSearchData = (updates: Partial<SearchData>) => {
     setSearchData(prev => ({ ...prev, ...updates }));
@@ -134,7 +71,6 @@ const TripSearchForm = () => {
                 value={searchData.destination}
                 onChange={(e) => updateSearchData({ destination: e.target.value })}
                 className="pl-12 h-12 bg-white border-gray-200 focus:border-blue-600 transition-colors"
-                required
               />
             </div>
 

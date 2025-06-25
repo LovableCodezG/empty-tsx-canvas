@@ -105,7 +105,6 @@ const DatePickerInput = ({ searchData, onUpdateSearchData }: DatePickerInputProp
               mode="single"
               selected={searchData.startDate}
               onSelect={handleSingleDateSelect}
-              disabled={(date) => date < new Date()}
               initialFocus
               className="pointer-events-auto"
             />
@@ -114,7 +113,6 @@ const DatePickerInput = ({ searchData, onUpdateSearchData }: DatePickerInputProp
               mode="range"
               selected={searchData.dateRange}
               onSelect={handleRangeDateSelect}
-              disabled={(date) => date < new Date()}
               initialFocus
               className="pointer-events-auto"
             />

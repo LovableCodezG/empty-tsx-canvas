@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
 import { DateRange } from "react-day-picker";
 
@@ -60,8 +61,6 @@ export interface TripCreationState {
   startDate: Date | null;
   endDate: Date | null;
   dateRange: DateRange | undefined;
-  // Search flow handling
-  fromSearchFlow: boolean;
   // Transport-related fields
   transportMode: 'skip' | 'uber' | 'rental' | null;
   rentalCostPerDay: number | null;
@@ -97,7 +96,6 @@ type TripCreationAction =
   | { type: 'SET_GROUP_MEMBERS'; payload: GroupMember[] }
   | { type: 'SET_CURRENT_STEP'; payload: number }
   | { type: 'SET_TRIP_DATES'; payload: { dateType: 'single' | 'range'; startDate?: Date | null; endDate?: Date | null; dateRange?: DateRange | undefined } }
-  | { type: 'SET_FROM_SEARCH_FLOW'; payload: boolean }
   | { type: 'SET_TRANSPORT_MODE'; payload: 'skip' | 'uber' | 'rental' }
   | { type: 'SET_RENTAL_COST_PER_DAY'; payload: number | null }
   | { type: 'SET_USER_BUDGET'; payload: number | null }
@@ -114,7 +112,6 @@ type TripCreationAction =
   | { type: 'SET_MISC_COST'; payload: number | null }
   | { type: 'SET_SCHEDULE_ACTIVITIES'; payload: Record<number, Activity[]> }
   | { type: 'SET_CHECKLIST_ITEMS'; payload: ChecklistItem[] }
-  | { type: 'POPULATE_FROM_SEARCH'; payload: { destination: string; dateType: 'single' | 'range'; startDate?: Date | null; endDate?: Date | null; dateRange?: DateRange | undefined; totalTravelers: number; fromSearchFlow: boolean } }
   | { type: 'RESET' };
   // Backend Integration: Add these actions when implementing API
   // | { type: 'SET_LOADING'; payload: boolean }
@@ -133,7 +130,6 @@ const initialState: TripCreationState = {
   startDate: null,
   endDate: null,
   dateRange: undefined,
-  fromSearchFlow: false,
   transportMode: null,
   rentalCostPerDay: null,
   userBudget: null,
@@ -150,38 +146,6 @@ const initialState: TripCreationState = {
   miscCost: null,
   scheduleActivities: {},
   checklistItems: [],
-};
-
-// Helper function to determine if destination is international
-const isInternationalDestination = (destination: string): boolean => {
-  // Simple check - if destination contains country indicators or non-domestic patterns
-  const internationalIndicators = ['🇧🇭', '🇫🇷', '🇮🇹', '🇯🇵', '🇬🇧', '🇺🇸', '🇦🇺', '🇨🇦', '🇩🇪', '🇪🇸'];
-  return internationalIndicators.some(indicator => destination.includes(indicator)) ||
-         destination.toLowerCase().includes('bahrain') ||
-         destination.toLowerCase().includes('france') ||
-         destination.toLowerCase().includes('italy') ||
-         destination.toLowerCase().includes('japan') ||
-         destination.toLowerCase().includes('uk') ||
-         destination.toLowerCase().includes('england') ||
-         destination.toLowerCase().includes('germany') ||
-         destination.toLowerCase().includes('spain');
-};
-
-// Helper function to extract country name from destination
-const extractCountryFromDestination = (destination: string): string => {
-  if (destination.includes('🇧🇭') || destination.toLowerCase().includes('bahrain')) return 'Bahrain';
-  if (destination.includes('🇫🇷') || destination.toLowerCase().includes('france')) return 'France';
-  if (destination.includes('🇮🇹') || destination.toLowerCase().includes('italy')) return 'Italy';
-  if (destination.includes('🇯🇵') || destination.toLowerCase().includes('japan')) return 'Japan';
-  if (destination.includes('🇬🇧') || destination.toLowerCase().includes('uk') || destination.toLowerCase().includes('england')) return 'United Kingdom';
-  if (destination.includes('🇺🇸') || destination.toLowerCase().includes('usa') || destination.toLowerCase().includes('america')) return 'United States';
-  if (destination.includes('🇦🇺') || destination.toLowerCase().includes('australia')) return 'Australia';
-  if (destination.includes('🇨🇦') || destination.toLowerCase().includes('canada')) return 'Canada';
-  if (destination.includes('🇩🇪') || destination.toLowerCase().includes('germany')) return 'Germany';
-  if (destination.includes('🇪🇸') || destination.toLowerCase().includes('spain')) return 'Spain';
-  
-  // Default fallback - extract text after flag or return as-is
-  return destination.replace(/🇧🇭|🇫🇷|🇮🇹|🇯🇵|🇬🇧|🇺🇸|🇦🇺|🇨🇦|🇩🇪|🇪🇸/g, '').trim() || destination;
 };
 
 const tripCreationReducer = (state: TripCreationState, action: TripCreationAction): TripCreationState => {
@@ -215,8 +179,6 @@ const tripCreationReducer = (state: TripCreationState, action: TripCreationActio
         endDate: action.payload.endDate !== undefined ? action.payload.endDate : state.endDate,
         dateRange: action.payload.dateRange !== undefined ? action.payload.dateRange : state.dateRange,
       };
-    case 'SET_FROM_SEARCH_FLOW':
-      return { ...state, fromSearchFlow: action.payload };
     case 'SET_TRANSPORT_MODE':
       return { 
         ...state, 
@@ -254,26 +216,6 @@ const tripCreationReducer = (state: TripCreationState, action: TripCreationActio
       return { ...state, scheduleActivities: action.payload };
     case 'SET_CHECKLIST_ITEMS':
       return { ...state, checklistItems: action.payload };
-    case 'POPULATE_FROM_SEARCH':
-      const { destination, dateType, startDate, endDate, dateRange, totalTravelers, fromSearchFlow } = action.payload;
-      const isInternational = isInternationalDestination(destination);
-      
-      return {
-        ...state,
-        // Destination settings
-        destinationType: isInternational ? 'international' : 'domestic',
-        selectedCountry: isInternational ? extractCountryFromDestination(destination) : null,
-        // Trip type based on travelers
-        tripType: totalTravelers > 1 ? 'group' : 'personal',
-        groupSize: totalTravelers,
-        // Date settings
-        dateType,
-        startDate,
-        endDate,
-        dateRange,
-        // Mark as coming from search flow
-        fromSearchFlow,
-      };
     case 'RESET':
       return initialState;
     default:
