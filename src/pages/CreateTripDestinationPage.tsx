@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTripCreation } from '@/contexts/TripCreationContext';
 import DestinationHeader from '@/components/trip-creation/DestinationHeader';
@@ -11,6 +10,27 @@ import TripNavigationButtons from '@/components/trip-creation/TripNavigationButt
 const CreateTripDestinationPage = () => {
   const { state } = useTripCreation();
   const navigate = useNavigate();
+
+  // If user came from search flow and has valid data, redirect to schedule
+  useEffect(() => {
+    if (state.fromSearchFlow) {
+      const hasValidDates = state.dateType && (
+        (state.dateType === 'single' && state.startDate) ||
+        (state.dateType === 'range' && state.dateRange?.from)
+      );
+
+      const hasValidDestination = state.destinationType && (
+        state.destinationType === 'domestic' || 
+        (state.destinationType === 'international' && state.selectedCountry)
+      );
+
+      if (hasValidDates && hasValidDestination && state.tripType) {
+        console.log('Search flow user with valid data, redirecting to schedule');
+        navigate('/create-trip/schedule');
+        return;
+      }
+    }
+  }, [state, navigate]);
 
   // Backend Integration: Validation logic for proceeding to next step
   const hasValidDates = state.dateType && (

@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
 import { DateRange } from "react-day-picker";
 
@@ -56,6 +55,7 @@ export interface TripCreationState {
   groupSize: number;
   groupMembers: GroupMember[];
   currentStep: number;
+  fromSearchFlow: boolean;
   // Date-related fields
   dateType: 'single' | 'range' | null;
   startDate: Date | null;
@@ -95,6 +95,7 @@ type TripCreationAction =
   | { type: 'SET_GROUP_SIZE'; payload: number }
   | { type: 'SET_GROUP_MEMBERS'; payload: GroupMember[] }
   | { type: 'SET_CURRENT_STEP'; payload: number }
+  | { type: 'SET_FROM_SEARCH_FLOW'; payload: boolean }
   | { type: 'SET_TRIP_DATES'; payload: { dateType: 'single' | 'range'; startDate?: Date | null; endDate?: Date | null; dateRange?: DateRange | undefined } }
   | { type: 'SET_TRANSPORT_MODE'; payload: 'skip' | 'uber' | 'rental' }
   | { type: 'SET_RENTAL_COST_PER_DAY'; payload: number | null }
@@ -126,6 +127,7 @@ const initialState: TripCreationState = {
   groupSize: 2,
   groupMembers: [],
   currentStep: 1,
+  fromSearchFlow: false,
   dateType: null,
   startDate: null,
   endDate: null,
@@ -171,6 +173,8 @@ const tripCreationReducer = (state: TripCreationState, action: TripCreationActio
       return { ...state, groupMembers: action.payload };
     case 'SET_CURRENT_STEP':
       return { ...state, currentStep: action.payload };
+    case 'SET_FROM_SEARCH_FLOW':
+      return { ...state, fromSearchFlow: action.payload };
     case 'SET_TRIP_DATES':
       return { 
         ...state, 
