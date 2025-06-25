@@ -42,8 +42,26 @@ const TripSearchForm = () => {
     }
   });
 
+  // NOTE: Search bar only works if the user is logged in.
+  // If not logged in, redirect to login page before continuing.
+  // for BOLT.new to check
+  const checkUserAuthStatus = (): boolean => {
+    // TODO: Implement proper authentication check
+    // For now, return true to maintain current functionality
+    // This should check actual user session/token
+    return true;
+  };
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check if user is logged in
+    const isLoggedIn = checkUserAuthStatus();
+    if (!isLoggedIn) {
+      console.log("User not logged in, redirecting to login page");
+      navigate('/login');
+      return;
+    }
     
     // Validate required fields
     if (!searchData.destination.trim()) {
