@@ -6,6 +6,13 @@ import { useNavigate } from "react-router-dom";
 import { MacbookPro } from "@/components/ui/macbook-pro";
 import Header from "@/components/shared/Header";
 import PlanTripButton from "@/components/ui/PlanTripButton";
+import { 
+  Cursor, 
+  CursorPointer, 
+  CursorBody, 
+  CursorName, 
+  CursorMessage 
+} from "@/components/ui/cursor";
 
 const HeroSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -115,7 +122,7 @@ const HeroSection = () => {
           </PlanTripButton>
         </motion.div>
 
-        {/* Hero MacBook with Video */}
+        {/* Hero MacBook with Video and Cursors */}
         <motion.div 
           initial={{ opacity: 0, y: 50, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -124,7 +131,7 @@ const HeroSection = () => {
         >
           <motion.div 
             style={{ scale: laptopScale }}
-            className="drop-shadow-[0_35px_70px_rgba(0,0,0,0.45)] shadow-black/40"
+            className="drop-shadow-[0_35px_70px_rgba(0,0,0,0.45)] shadow-black/40 relative"
           >
             <MacbookPro className="w-full h-auto mx-auto">
               <video
@@ -138,6 +145,78 @@ const HeroSection = () => {
                 Your browser does not support the video tag.
               </video>
             </MacbookPro>
+
+            {/* Group Editing Cursors */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 1.8, ease: "easeOut" }}
+              className="absolute inset-0 pointer-events-none"
+            >
+              {/* Cursor 1 - Top left area */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4, delay: 2.0, ease: "easeOut" }}
+                className="absolute top-[20%] left-[25%] hidden sm:block"
+              >
+                <Cursor>
+                  <CursorPointer className="text-emerald-500" />
+                  <CursorBody className="bg-emerald-100 text-emerald-700">
+                    <CursorName>@sarah</CursorName>
+                    <CursorMessage>Add Rome to day 3?</CursorMessage>
+                  </CursorBody>
+                </Cursor>
+              </motion.div>
+
+              {/* Cursor 2 - Center right area */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4, delay: 2.4, ease: "easeOut" }}
+                className="absolute top-[35%] right-[20%] hidden md:block"
+              >
+                <Cursor>
+                  <CursorPointer className="text-rose-500" />
+                  <CursorBody className="bg-rose-100 text-rose-700">
+                    <CursorName>@mike</CursorName>
+                    <CursorMessage>What about lunch here?</CursorMessage>
+                  </CursorBody>
+                </Cursor>
+              </motion.div>
+
+              {/* Cursor 3 - Bottom center area */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4, delay: 2.8, ease: "easeOut" }}
+                className="absolute bottom-[25%] left-[35%] hidden sm:block"
+              >
+                <Cursor>
+                  <CursorPointer className="text-sky-500" />
+                  <CursorBody className="bg-sky-100 text-sky-700">
+                    <CursorName>@emma</CursorName>
+                    <CursorMessage>Love this itinerary! 🎉</CursorMessage>
+                  </CursorBody>
+                </Cursor>
+              </motion.div>
+
+              {/* Cursor 4 - Top right for mobile visibility */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4, delay: 3.2, ease: "easeOut" }}
+                className="absolute top-[15%] right-[15%] sm:hidden"
+              >
+                <Cursor>
+                  <CursorPointer className="text-purple-500" />
+                  <CursorBody className="bg-purple-100 text-purple-700">
+                    <CursorName>@alex</CursorName>
+                    <CursorMessage>Perfect!</CursorMessage>
+                  </CursorBody>
+                </Cursor>
+              </motion.div>
+            </motion.div>
           </motion.div>
         </motion.div>
       </div>
