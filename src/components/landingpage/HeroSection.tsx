@@ -7,11 +7,9 @@ import { MacbookPro } from "@/components/ui/macbook-pro";
 import Header from "@/components/shared/Header";
 import PlanTripButton from "@/components/ui/PlanTripButton";
 import { 
-  Cursor, 
-  CursorPointer, 
-  CursorBody, 
-  CursorName, 
-  CursorMessage 
+  CursorProvider,
+  Cursor,
+  CursorFollow
 } from "@/components/ui/cursor";
 
 const HeroSection = () => {
@@ -122,7 +120,7 @@ const HeroSection = () => {
           </PlanTripButton>
         </motion.div>
 
-        {/* Hero MacBook with Video and Cursors */}
+        {/* Hero MacBook with Video and Interactive Cursor */}
         <motion.div 
           initial={{ opacity: 0, y: 50, scale: 0.9 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -133,20 +131,41 @@ const HeroSection = () => {
             style={{ scale: laptopScale }}
             className="drop-shadow-[0_35px_70px_rgba(0,0,0,0.45)] shadow-black/40 relative"
           >
-            <MacbookPro className="w-full h-auto mx-auto">
-              <video
-                className="w-full h-full object-cover"
-                autoPlay
-                loop
-                muted
-                playsInline
-              >
-                <source src="/images/landingpage/herovideo.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            </MacbookPro>
+            <CursorProvider>
+              <MacbookPro className="w-full h-auto mx-auto">
+                <video
+                  className="w-full h-full object-cover"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                >
+                  <source src="/images/landingpage/herovideo.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </MacbookPro>
 
-            {/* Group Editing Cursors */}
+              {/* Interactive Cursor */}
+              <Cursor>
+                <svg
+                  className="size-6 text-blue-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 40 40"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M1.8 4.4 7 36.2c.3 1.8 2.6 2.3 3.6.8l3.9-5.7c1.7-2.5 4.5-4.1 7.5-4.3l6.9-.5c1.8-.1 2.5-2.4 1.1-3.5L5 2.5c-1.4-1.1-3.5 0-3.3 1.9Z"
+                  />
+                </svg>
+              </Cursor>
+              <CursorFollow>
+                <div className="bg-blue-500 text-white px-3 py-2 rounded-lg text-sm shadow-lg font-medium">
+                  ✨ Collaborative Planning
+                </div>
+              </CursorFollow>
+            </CursorProvider>
+
+            {/* Static Group Editing Cursors */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -160,13 +179,27 @@ const HeroSection = () => {
                 transition={{ duration: 0.4, delay: 2.0, ease: "easeOut" }}
                 className="absolute top-[20%] left-[25%] hidden sm:block"
               >
-                <Cursor>
-                  <CursorPointer className="text-emerald-500" />
-                  <CursorBody className="bg-emerald-100 text-emerald-700">
-                    <CursorName>@sarah</CursorName>
-                    <CursorMessage>Add Rome to day 3?</CursorMessage>
-                  </CursorBody>
-                </Cursor>
+                <span className="pointer-events-none relative select-none">
+                  <svg
+                    aria-hidden="true"
+                    focusable="false"
+                    className="size-3.5 text-emerald-500"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="none"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M19.438 6.716 1.115.05A.832.832 0 0 0 .05 1.116L6.712 19.45a.834.834 0 0 0 1.557.025l3.198-8 7.995-3.2a.833.833 0 0 0 0-1.559h-.024Z"
+                    />
+                  </svg>
+                  <span className="relative ml-3.5 flex flex-col whitespace-nowrap rounded-xl py-1 pr-3 pl-2.5 text-xs bg-emerald-100 text-emerald-700">
+                    <span>@sarah</span>
+                    <span>Add Rome to day 3?</span>
+                  </span>
+                </span>
               </motion.div>
 
               {/* Cursor 2 - Center right area */}
@@ -176,13 +209,27 @@ const HeroSection = () => {
                 transition={{ duration: 0.4, delay: 2.4, ease: "easeOut" }}
                 className="absolute top-[35%] right-[20%] hidden md:block"
               >
-                <Cursor>
-                  <CursorPointer className="text-rose-500" />
-                  <CursorBody className="bg-rose-100 text-rose-700">
-                    <CursorName>@mike</CursorName>
-                    <CursorMessage>What about lunch here?</CursorMessage>
-                  </CursorBody>
-                </Cursor>
+                <span className="pointer-events-none relative select-none">
+                  <svg
+                    aria-hidden="true"
+                    focusable="false"
+                    className="size-3.5 text-rose-500"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="none"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M19.438 6.716 1.115.05A.832.832 0 0 0 .05 1.116L6.712 19.45a.834.834 0 0 0 1.557.025l3.198-8 7.995-3.2a.833.833 0 0 0 0-1.559h-.024Z"
+                    />
+                  </svg>
+                  <span className="relative ml-3.5 flex flex-col whitespace-nowrap rounded-xl py-1 pr-3 pl-2.5 text-xs bg-rose-100 text-rose-700">
+                    <span>@mike</span>
+                    <span>What about lunch here?</span>
+                  </span>
+                </span>
               </motion.div>
 
               {/* Cursor 3 - Bottom center area */}
@@ -192,13 +239,27 @@ const HeroSection = () => {
                 transition={{ duration: 0.4, delay: 2.8, ease: "easeOut" }}
                 className="absolute bottom-[25%] left-[35%] hidden sm:block"
               >
-                <Cursor>
-                  <CursorPointer className="text-sky-500" />
-                  <CursorBody className="bg-sky-100 text-sky-700">
-                    <CursorName>@emma</CursorName>
-                    <CursorMessage>Love this itinerary! 🎉</CursorMessage>
-                  </CursorBody>
-                </Cursor>
+                <span className="pointer-events-none relative select-none">
+                  <svg
+                    aria-hidden="true"
+                    focusable="false"
+                    className="size-3.5 text-sky-500"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="none"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M19.438 6.716 1.115.05A.832.832 0 0 0 .05 1.116L6.712 19.45a.834.834 0 0 0 1.557.025l3.198-8 7.995-3.2a.833.833 0 0 0 0-1.559h-.024Z"
+                    />
+                  </svg>
+                  <span className="relative ml-3.5 flex flex-col whitespace-nowrap rounded-xl py-1 pr-3 pl-2.5 text-xs bg-sky-100 text-sky-700">
+                    <span>@emma</span>
+                    <span>Love this itinerary! 🎉</span>
+                  </span>
+                </span>
               </motion.div>
 
               {/* Cursor 4 - Top right for mobile visibility */}
@@ -208,13 +269,27 @@ const HeroSection = () => {
                 transition={{ duration: 0.4, delay: 3.2, ease: "easeOut" }}
                 className="absolute top-[15%] right-[15%] sm:hidden"
               >
-                <Cursor>
-                  <CursorPointer className="text-purple-500" />
-                  <CursorBody className="bg-purple-100 text-purple-700">
-                    <CursorName>@alex</CursorName>
-                    <CursorMessage>Perfect!</CursorMessage>
-                  </CursorBody>
-                </Cursor>
+                <span className="pointer-events-none relative select-none">
+                  <svg
+                    aria-hidden="true"
+                    focusable="false"
+                    className="size-3.5 text-purple-500"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    fill="none"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M19.438 6.716 1.115.05A.832.832 0 0 0 .05 1.116L6.712 19.45a.834.834 0 0 0 1.557.025l3.198-8 7.995-3.2a.833.833 0 0 0 0-1.559h-.024Z"
+                    />
+                  </svg>
+                  <span className="relative ml-3.5 flex flex-col whitespace-nowrap rounded-xl py-1 pr-3 pl-2.5 text-xs bg-purple-100 text-purple-700">
+                    <span>@alex</span>
+                    <span>Perfect!</span>
+                  </span>
+                </span>
               </motion.div>
             </motion.div>
           </motion.div>
