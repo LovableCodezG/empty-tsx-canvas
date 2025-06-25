@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { MapPin, Plus } from "lucide-react";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { DateRange } from "react-day-picker";
 import { DatePickerInput } from "./DatePickerInput";
@@ -52,7 +52,9 @@ const TripSearchForm = () => {
     return true;
   };
 
-  const handleSearch = (e: React.FormEvent) => {
+  // NOTE: This flow skips destination page if user starts planning from search bar.
+  // Ensure destination and dates are stored before navigation to avoid redirect.
+  const handleSearch = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     
     // Check if user is logged in
@@ -94,7 +96,7 @@ const TripSearchForm = () => {
       travelerBreakdown: searchData.travelers
     });
 
-    // Populate trip creation context with search data
+    // Populate trip creation context with search data BEFORE navigation
     dispatch({
       type: 'POPULATE_FROM_SEARCH',
       payload: {
@@ -107,9 +109,13 @@ const TripSearchForm = () => {
       }
     });
 
-    // Navigate directly to schedule builder, skipping destination page
-    navigate('/create-trip/schedule');
-  };
+    console.log("Context populated, navigating to schedule page...");
+
+    // Small delay to ensure context is updated before navigation
+    setTimeout(() => {
+      navigate('/create-trip/schedule');
+    }, 100);
+  }, [searchData, dispatch, navigate]);
 
   const updateSearchData = (updates: Partial<SearchData>) => {
     setSearchData(prev => ({ ...prev, ...updates }));

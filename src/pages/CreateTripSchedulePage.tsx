@@ -10,31 +10,47 @@ const CreateTripSchedulePage = () => {
 
   // Check if user has valid trip data, redirect appropriately
   useEffect(() => {
+    console.log('Schedule page loaded with state:', {
+      hasDestination: !!state.selectedCountry || !!state.destinationType,
+      hasValidDates: state.dateType && (
+        (state.dateType === 'single' && state.startDate) ||
+        (state.dateType === 'range' && state.dateRange?.from)
+      ),
+      fromSearchFlow: state.fromSearchFlow,
+      tripType: state.tripType,
+      destinationType: state.destinationType,
+      selectedCountry: state.selectedCountry
+    });
+
     const hasValidDates = state.dateType && (
       (state.dateType === 'single' && state.startDate) ||
       (state.dateType === 'range' && state.dateRange?.from)
     );
 
-    // If no valid dates and NOT from search flow, redirect to destination page
-    if (!hasValidDates && !state.fromSearchFlow) {
-      console.log('No valid dates and not from search flow, redirecting to destination page');
+    const hasDestinationData = state.destinationType && (
+      state.destinationType === 'domestic' ||
+      (state.destinationType === 'international' && state.selectedCountry)
+    );
+
+    // For users coming from search flow: Only require dates and destination type
+    if (state.fromSearchFlow) {
+      if (!hasValidDates || !hasDestinationData) {
+        console.log('Search flow user missing essential data, redirecting to destination page');
+        navigate('/create-trip/destination');
+        return;
+      }
+      console.log('Search flow user has valid data, allowing schedule page access');
+      return;
+    }
+
+    // For users manually navigating: Require more complete data
+    if (!hasValidDates || !hasDestinationData || !state.tripType) {
+      console.log('Manual navigation without complete data, redirecting to destination page');
       navigate('/create-trip/destination');
       return;
     }
 
-    // If from search flow but missing essential data, redirect to destination page
-    if (state.fromSearchFlow && (!state.tripType || !state.destinationType)) {
-      console.log('From search flow but missing essential data, redirecting to destination page');
-      navigate('/create-trip/destination');
-      return;
-    }
-
-    console.log('Schedule page loaded with state:', {
-      hasValidDates,
-      fromSearchFlow: state.fromSearchFlow,
-      tripType: state.tripType,
-      destinationType: state.destinationType
-    });
+    console.log('Manual navigation with complete data, allowing schedule page access');
   }, [state, navigate]);
 
   return <ScheduleBuilderContent />;
