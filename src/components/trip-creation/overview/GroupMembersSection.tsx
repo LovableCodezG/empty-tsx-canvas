@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTripCreation, GroupMember } from '@/contexts/TripCreationContext';
@@ -20,12 +21,13 @@ const GroupMembersSection = () => {
   }
 
   const handleAddMember = () => {
-    if (!newMemberForm.name.trim() || !newMemberForm.email.trim()) return;
+    // Only require name, email is now optional
+    if (!newMemberForm.name.trim()) return;
     
     const newMember: GroupMember = {
       id: `member-${Date.now()}`,
       name: newMemberForm.name.trim(),
-      email: newMemberForm.email.trim()
+      email: newMemberForm.email.trim() || '' // Allow empty email
     };
 
     dispatch({
@@ -43,11 +45,12 @@ const GroupMembersSection = () => {
   };
 
   const handleUpdateMember = () => {
-    if (!editForm.name.trim() || !editForm.email.trim()) return;
+    // Only require name, email is now optional
+    if (!editForm.name.trim()) return;
     
     const updatedMembers = state.groupMembers.map(member =>
       member.id === editingMember
-        ? { ...member, name: editForm.name.trim(), email: editForm.email.trim() }
+        ? { ...member, name: editForm.name.trim(), email: editForm.email.trim() || '' }
         : member
     );
     
@@ -120,20 +123,22 @@ const GroupMembersSection = () => {
                     {editingMember === member.id ? (
                       <div className="flex-1 space-y-2">
                         <Input
-                          placeholder="Name"
+                          placeholder="Name *"
                           value={editForm.name}
                           onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                           className="text-sm"
                         />
                         <Input
-                          placeholder="Email"
+                          placeholder="Email (optional)"
                           type="email"
                           value={editForm.email}
                           onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
                           className="text-sm"
                         />
                         <div className="flex gap-2">
-                          <Button size="sm" onClick={handleUpdateMember}>Save</Button>
+                          <Button size="sm" onClick={handleUpdateMember} disabled={!editForm.name.trim()}>
+                            Save
+                          </Button>
                           <Button size="sm" variant="outline" onClick={cancelEdit}>Cancel</Button>
                         </div>
                       </div>
@@ -141,7 +146,11 @@ const GroupMembersSection = () => {
                       <>
                         <div className="min-w-0 flex-1">
                           <p className="font-medium text-gray-900 truncate">{member.name}</p>
-                          <p className="text-sm text-gray-500 truncate">{member.email}</p>
+                          {member.email ? (
+                            <p className="text-sm text-gray-500 truncate">{member.email}</p>
+                          ) : (
+                            <p className="text-sm text-gray-400 italic">No email provided</p>
+                          )}
                           <p className="text-xs text-blue-600">Trip Member</p>
                         </div>
                         <div className="flex gap-1">
@@ -182,7 +191,7 @@ const GroupMembersSection = () => {
                 <div className="space-y-3">
                   <div className="relative">
                     <Input
-                      placeholder="Full name"
+                      placeholder="Full name *"
                       value={newMemberForm.name}
                       onChange={(e) => setNewMemberForm({ ...newMemberForm, name: e.target.value })}
                       className="pr-10"
@@ -191,7 +200,7 @@ const GroupMembersSection = () => {
                   </div>
                   <div className="relative">
                     <Input
-                      placeholder="Email address"
+                      placeholder="Email address (optional)"
                       type="email"
                       value={newMemberForm.email}
                       onChange={(e) => setNewMemberForm({ ...newMemberForm, email: e.target.value })}
@@ -200,7 +209,13 @@ const GroupMembersSection = () => {
                     <Mail className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                   </div>
                   <div className="flex gap-2">
-                    <Button onClick={handleAddMember} size="sm">Add Member</Button>
+                    <Button 
+                      onClick={handleAddMember} 
+                      size="sm" 
+                      disabled={!newMemberForm.name.trim()}
+                    >
+                      Add Member
+                    </Button>
                     <Button variant="outline" onClick={cancelAdd} size="sm">Cancel</Button>
                   </div>
                 </div>
@@ -224,7 +239,7 @@ const GroupMembersSection = () => {
             )}
 
             <div className="text-sm text-blue-600 mt-4">
-              Members can be added and managed here
+              Members can be added and managed here. Email is optional but recommended for sharing trip details.
             </div>
           </div>
         </CardContent>
