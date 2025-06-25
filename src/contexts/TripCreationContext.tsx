@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
 import { DateRange } from "react-day-picker";
 
@@ -115,7 +114,7 @@ type TripCreationAction =
   | { type: 'SET_MISC_COST'; payload: number | null }
   | { type: 'SET_SCHEDULE_ACTIVITIES'; payload: Record<number, Activity[]> }
   | { type: 'SET_CHECKLIST_ITEMS'; payload: ChecklistItem[] }
-  | { type: 'POPULATE_FROM_SEARCH'; payload: { destination: string; dateType: 'single' | 'range'; startDate?: Date | null; endDate?: Date | null; dateRange?: DateRange | undefined; totalTravelers: number } }
+  | { type: 'POPULATE_FROM_SEARCH'; payload: { destination: string; dateType: 'single' | 'range'; startDate?: Date | null; endDate?: Date | null; dateRange?: DateRange | undefined; totalTravelers: number; fromSearchFlow: boolean } }
   | { type: 'RESET' };
   // Backend Integration: Add these actions when implementing API
   // | { type: 'SET_LOADING'; payload: boolean }
@@ -256,7 +255,7 @@ const tripCreationReducer = (state: TripCreationState, action: TripCreationActio
     case 'SET_CHECKLIST_ITEMS':
       return { ...state, checklistItems: action.payload };
     case 'POPULATE_FROM_SEARCH':
-      const { destination, dateType, startDate, endDate, dateRange, totalTravelers } = action.payload;
+      const { destination, dateType, startDate, endDate, dateRange, totalTravelers, fromSearchFlow } = action.payload;
       const isInternational = isInternationalDestination(destination);
       
       return {
@@ -273,7 +272,7 @@ const tripCreationReducer = (state: TripCreationState, action: TripCreationActio
         endDate,
         dateRange,
         // Mark as coming from search flow
-        fromSearchFlow: true,
+        fromSearchFlow,
       };
     case 'RESET':
       return initialState;
