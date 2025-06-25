@@ -2,18 +2,46 @@
 import { WorldMap } from "@/components/ui/world-map";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import TripSearchForm from "../TripSearchForm";
+import { useNavigate } from "react-router-dom";
 import { MacbookPro } from "@/components/ui/macbook-pro";
 import Header from "@/components/shared/Header";
+import PlanTripButton from "@/components/ui/PlanTripButton";
 
 const HeroSection = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"],
   });
 
   const laptopScale = useTransform(scrollYProgress, [0, 1], [1, 1.2]);
+
+  // NOTE: This button only leads to the create-trip flow if the user is logged in.
+  // If not logged in, they will be asked to login or signup.
+  // TODO: Connect to proper authentication system when auth is implemented.
+  const checkUserAuthStatus = (): boolean => {
+    // Placeholder authentication check - currently returns true for all users
+    // In a real implementation, this would check JWT tokens, session storage, etc.
+    return true;
+  };
+
+  const handlePlanTrip = async () => {
+    try {
+      const isAuthenticated = checkUserAuthStatus();
+      
+      if (isAuthenticated) {
+        // Navigate to the trip creation destination page
+        navigate('/create-trip/destination');
+      } else {
+        // Navigate to login page (future enhancement)
+        navigate('/login');
+      }
+    } catch (error) {
+      console.error('Navigation error:', error);
+      throw new Error('Failed to navigate to trip planning');
+    }
+  };
 
   return (
     <section
@@ -77,8 +105,14 @@ const HeroSection = () => {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
+          className="relative z-20 -mt-40 flex justify-center"
         >
-          <TripSearchForm />
+          <PlanTripButton 
+            onPlanTrip={handlePlanTrip}
+            className="shadow-2xl"
+          >
+            Plan Your Trip
+          </PlanTripButton>
         </motion.div>
 
         {/* Hero MacBook with Video */}
