@@ -9,9 +9,9 @@ import { useNavigate } from "react-router-dom";
 
 // Backend Integration Comments:
 // 1. Add favorite/wishlist functionality with user authentication
-// 2. Track trip view analytics when "See More" is clicked
-// 3. Implement real-time pricing updates
-// 4. Add availability checking
+// 2. Track trip view analytics when "Learn More" is clicked
+// 3. Implement real-time pricing estimates updates
+// 4. Add trip planning templates and customization options
 // 5. Store user interaction data for recommendations
 // 6. Add image lazy loading and optimization
 
@@ -45,7 +45,7 @@ const PremadeTripCard = ({ trip }: PremadeTripCardProps) => {
       : "bg-green-100 text-green-800";
   };
 
-  const handleSeeMore = () => {
+  const handleLearnMore = () => {
     // Backend TODO: Track trip view analytics
     // Analytics.track('trip_viewed', { tripId: trip.id, tripSlug: trip.slug });
     
@@ -94,10 +94,11 @@ const PremadeTripCard = ({ trip }: PremadeTripCardProps) => {
             </Button>
           </div>
 
-          {/* Price */}
+          {/* Price Estimate */}
           <div className="absolute bottom-3 right-3">
             <div className="bg-white/90 backdrop-blur-sm rounded-lg px-2 py-1">
-              <span className="text-sm font-bold text-gray-900">${trip.price}</span>
+              <span className="text-xs text-gray-600">Est.</span>
+              <span className="text-sm font-bold text-gray-900 ml-1">${trip.price}</span>
             </div>
           </div>
         </div>
@@ -150,12 +151,12 @@ const PremadeTripCard = ({ trip }: PremadeTripCardProps) => {
             </div>
           </div>
 
-          {/* See More Button */}
+          {/* Learn More Button */}
           <Button 
-            onClick={handleSeeMore}
+            onClick={handleLearnMore}
             className="w-full bg-spot-primary hover:bg-spot-primary/90"
           >
-            See More
+            Learn More
           </Button>
         </CardContent>
       </Card>

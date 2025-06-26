@@ -12,13 +12,13 @@ import tripsData from "@/data/trips.json";
 // Backend Integration Comments:
 // 1. Replace static data with API call: GET /api/trips/:slug
 // 2. Add user reviews and ratings section
-// 3. Implement booking functionality
+// 3. Implement trip planning tools and customization features
 // 4. Add related trips recommendations
 // 5. Track page views and user engagement
 // 6. Add social sharing capabilities
-// 7. Implement real-time availability checking
+// 7. Implement real-time cost estimation tools
 // 8. Add image gallery with lightbox
-// 9. Store user booking inquiries
+// 9. Store user trip planning sessions and favorites
 
 const TripDetailPage = () => {
   const { tripId } = useParams<{ tripId: string }>();
@@ -40,10 +40,10 @@ const TripDetailPage = () => {
     );
   }
 
-  const handleBookNow = () => {
-    // Backend TODO: Implement booking flow
-    // BookingService.initiate(trip.id);
-    console.log(`Booking initiated for ${trip.title}`);
+  const handleStartPlanning = () => {
+    // Backend TODO: Implement trip planning flow
+    // PlanningService.initiate(trip.id);
+    console.log(`Planning started for ${trip.title}`);
   };
 
   return (
@@ -150,7 +150,7 @@ const TripDetailPage = () => {
               >
                 <Card>
                   <CardContent className="p-6">
-                    <h2 className="text-2xl font-bold mb-4">Itinerary</h2>
+                    <h2 className="text-2xl font-bold mb-4">Sample Itinerary</h2>
                     <div className="space-y-4">
                       {trip.itinerary.map((day, index) => (
                         <div key={index} className="border-l-4 border-spot-primary pl-4">
@@ -181,7 +181,7 @@ const TripDetailPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
                   <CardContent className="p-6">
-                    <h3 className="text-xl font-bold mb-4 text-green-700">What's Included</h3>
+                    <h3 className="text-xl font-bold mb-4 text-green-700">Typically Includes</h3>
                     <div className="space-y-2">
                       {trip.inclusions.map((item, index) => (
                         <div key={index} className="flex items-center">
@@ -194,7 +194,7 @@ const TripDetailPage = () => {
                 </Card>
                 <Card>
                   <CardContent className="p-6">
-                    <h3 className="text-xl font-bold mb-4 text-red-700">What's Not Included</h3>
+                    <h3 className="text-xl font-bold mb-4 text-red-700">Additional Expenses</h3>
                     <div className="space-y-2">
                       {trip.exclusions.map((item, index) => (
                         <div key={index} className="flex items-center">
@@ -219,10 +219,11 @@ const TripDetailPage = () => {
             >
               <Card>
                 <CardContent className="p-6">
-                  {/* Price */}
+                  {/* Price Estimate */}
                   <div className="text-center mb-6">
+                    <div className="text-sm text-gray-600 mb-1">Estimated Cost</div>
                     <div className="text-3xl font-bold text-spot-primary">${trip.price}</div>
-                    <div className="text-gray-600">per person</div>
+                    <div className="text-gray-600 text-sm">per person</div>
                   </div>
 
                   <Separator className="mb-6" />
@@ -250,16 +251,16 @@ const TripDetailPage = () => {
                     </div>
                   </div>
 
-                  {/* Book Now Button */}
+                  {/* Start Planning Button */}
                   <Button 
-                    onClick={handleBookNow}
+                    onClick={handleStartPlanning}
                     className="w-full bg-spot-primary hover:bg-spot-primary/90 text-lg py-3"
                   >
-                    Book Now
+                    Start Planning
                   </Button>
 
                   <div className="text-center mt-4">
-                    <p className="text-sm text-gray-500">Free cancellation up to 24 hours before</p>
+                    <p className="text-sm text-gray-500">Customize this trip to your preferences</p>
                   </div>
                 </CardContent>
               </Card>
