@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Star, Clock, Users, MapPin, Check, X } from "lucide-react";
@@ -7,7 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
 import tripsData from "@/data/trips.json";
+import EnhancedQuickSetupModal, { QuickSetupData } from "@/components/trips/EnhancedQuickSetupModal";
+import { createTripFromPremade, PremadeTripData } from "@/utils/universalTripCreation";
 
 // Backend Integration Comments:
 // 1. Replace static data with API call: GET /api/trips/:slug
@@ -19,10 +22,17 @@ import tripsData from "@/data/trips.json";
 // 7. Implement real-time cost estimation tools
 // 8. Add image gallery with lightbox
 // 9. Store user trip planning sessions and favorites
+// 10. API Endpoints for streamlined planning:
+//     - POST /api/trips/from-template - Create trip from premade template
+//     - POST /api/trips/from-search - Create trip from search data
+//     - GET /api/trip-templates - Fetch available premade trips
+//     - PUT /api/trips/:id/customize - Allow post-creation customization
 
 const TripDetailPage = () => {
   const { tripId } = useParams<{ tripId: string }>();
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [showQuickSetup, setShowQuickSetup] = useState(false);
 
   // Backend TODO: Replace with API call
   const trip = tripsData.trips.find(t => t.slug === tripId);
@@ -41,9 +51,53 @@ const TripDetailPage = () => {
   }
 
   const handleStartPlanning = () => {
-    // Backend TODO: Implement trip planning flow
-    // PlanningService.initiate(trip.id);
-    console.log(`Planning started for ${trip.title}`);
+    // Backend TODO: Track planning initiation analytics
+    // Analytics.track('trip_planning_started', { tripId: trip.id, tripSlug: trip.slug });
+    setShowQuickSetup(true);
+  };
+
+  const handleQuickSetupSubmit = (setupData: QuickSetupData) => {
+    try {
+      // Convert trip data to the required format
+      const premadeTripData: PremadeTripData = {
+        ...trip,
+        detailedDescription: trip.detailedDescription || trip.description,
+        inclusions: trip.inclusions || [],
+        exclusions: trip.exclusions || []
+      };
+
+      // Create trip directly using the universal creation function
+      const createdTrip = createTripFromPremade(premadeTripData, setupData);
+      
+      console.log('Trip created successfully:', createdTrip);
+      
+      // Show success message
+      toast({
+        title: "Trip Created!",
+        description: `"${setupData.tripName}" has been added to your dashboard.`,
+      });
+
+      // Close modal
+      setShowQuickSetup(false);
+      
+      // Navigate directly to dashboard (bypassing all creation steps)
+      navigate('/dashboard');
+      
+      // Backend TODO: Send trip creation data to API
+      // const apiResponse = await TripService.createFromTemplate({
+      //   templateId: trip.id,
+      //   setupData,
+      //   userId: currentUser.id
+      // });
+      
+    } catch (error) {
+      console.error('Failed to create trip:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create trip. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   return (
@@ -260,7 +314,7 @@ const TripDetailPage = () => {
                   </Button>
 
                   <div className="text-center mt-4">
-                    <p className="text-sm text-gray-500">Customize this trip to your preferences</p>
+                    <p className="text-sm text-gray-500">Create your personalized trip instantly</p>
                   </div>
                 </CardContent>
               </Card>
@@ -268,6 +322,15 @@ const TripDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Quick Setup Modal */}
+      <EnhancedQuickSetupModal
+        isOpen={showQuickSetup}
+        onClose={() => setShowQuickSetup(false)}
+        onSubmit={handleQuickSetupSubmit}
+        premadeTripTitle={trip.title}
+        suggestedDuration={trip.duration}
+      />
     </div>
   );
 };
