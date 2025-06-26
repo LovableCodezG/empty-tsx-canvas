@@ -89,15 +89,15 @@ const PlanTripButton: React.FC<PlanTripButtonProps> = ({
     setIsAnimatingPlane(true)
     clearAllTimers() // Clear any ongoing animation timers
 
-    // Start plane flying after text fades out (200ms)
+    // Start plane flying after text fades out (300ms instead of 200ms)
     addTimer(() => {
       // No explicit planePosition state needed, just let CSS handle the animation
-    }, 200)
+    }, 300)
 
-    // End animation sequence (plane finishes flying)
+    // End animation sequence (plane finishes flying) - extended from 800ms to 1400ms
     addTimer(() => {
       setIsAnimatingPlane(false)
-    }, 800)
+    }, 1400)
   }, [addTimer, clearAllTimers])
 
   const handleMouseLeave = useCallback(() => {
@@ -169,38 +169,38 @@ const PlanTripButton: React.FC<PlanTripButtonProps> = ({
 
         {/* Content */}
         <div className="relative z-10 flex items-center justify-center gap-3">
-          {/* Flying Plane Animation with Trail Lines */}
+          {/* Flying Plane Animation with Trail Lines - Extended duration from 600ms to 1000ms */}
           <div className={`
             absolute
-            transition-all duration-600 linear
+            transition-all duration-1000 linear
             ${isAnimatingPlane ? 'translate-x-[500%] opacity-100' : '-translate-x-[500%] opacity-0'}
           `}>
             {/* Trail Lines */}
             <div className="absolute inset-0 flex items-center justify-center">
-              {/* Trail Line 1 */}
+              {/* Trail Line 1 - Extended duration from 600ms to 1000ms */}
                             <div className={`
                 absolute w-[200px] h-0.5 bg-gradient-to-r from-blue-500/60 via-blue-500/40 to-transparent
                 -translate-x-[190px] -translate-y-0.5
-                transition-all duration-600 linear
+                transition-all duration-1000 linear
                 ${isAnimatingPlane ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'}
               `} />
 
-              {/* Trail Line 2 */}
+              {/* Trail Line 2 - Extended duration from 600ms to 1000ms */}
               <div className={`
                 absolute w-[180px] h-0.5 bg-gradient-to-r from-lime-500/40 via-lime-500/25 to-transparent
                 -translate-x-[170px] translate-y-0.5
-                transition-all duration-600 linear
+                transition-all duration-1000 linear
                 ${isAnimatingPlane ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'}
               `} 
               style={{ 
                 background: `linear-gradient(to right, rgba(132, 204, 22, 0.4), rgba(132, 204, 22, 0.25), transparent)`
               }} />
 
-              {/* Trail Line 3 */}
+              {/* Trail Line 3 - Extended duration from 600ms to 1000ms */}
               <div className={`
                 absolute w-[160px] h-0.5 bg-gradient-to-r from-blue-300/30 via-blue-300/15 to-transparent
                 -translate-x-[150px] -translate-y-1
-                transition-all duration-600 linear
+                transition-all duration-1000 linear
                 ${isAnimatingPlane ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'}
               `} />
             </div>
@@ -216,12 +216,12 @@ const PlanTripButton: React.FC<PlanTripButtonProps> = ({
             )}
           </div>
 
-          {/* Button Text */}
+          {/* Button Text - Extended delay from 600ms to 1000ms to match longer animation */}
           <span className={`
-            transition-all duration-200 ease-out
+            transition-all duration-300 ease-out
             ${isAnimatingPlane ? 'opacity-0 blur-sm' : 'opacity-100 blur-0'}
             ${isLoading ? 'text-blue-500' : 'text-foreground'}
-            ${isAnimatingPlane ? 'delay-0' : 'delay-[600ms]'}
+            ${isAnimatingPlane ? 'delay-0' : 'delay-1000'}
           `}>
             {isLoading ? 'Planning...' : children}
           </span>
