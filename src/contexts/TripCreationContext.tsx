@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useReducer, ReactNode } from 'react';
 import { DateRange } from "react-day-picker";
 
@@ -112,6 +111,9 @@ type TripCreationAction =
   | { type: 'SET_MISC_COST'; payload: number | null }
   | { type: 'SET_SCHEDULE_ACTIVITIES'; payload: Record<number, Activity[]> }
   | { type: 'SET_CHECKLIST_ITEMS'; payload: ChecklistItem[] }
+  | { type: 'TOGGLE_CHECKLIST_ITEM'; payload: string }
+  | { type: 'ADD_CHECKLIST_ITEM'; payload: ChecklistItem }
+  | { type: 'REMOVE_CHECKLIST_ITEM'; payload: string }
   | { type: 'RESET' };
   // Backend Integration: Add these actions when implementing API
   // | { type: 'SET_LOADING'; payload: boolean }
@@ -216,6 +218,23 @@ const tripCreationReducer = (state: TripCreationState, action: TripCreationActio
       return { ...state, scheduleActivities: action.payload };
     case 'SET_CHECKLIST_ITEMS':
       return { ...state, checklistItems: action.payload };
+    case 'TOGGLE_CHECKLIST_ITEM':
+      return {
+        ...state,
+        checklistItems: state.checklistItems.map(item =>
+          item.id === action.payload ? { ...item, completed: !item.completed } : item
+        )
+      };
+    case 'ADD_CHECKLIST_ITEM':
+      return {
+        ...state,
+        checklistItems: [...state.checklistItems, action.payload]
+      };
+    case 'REMOVE_CHECKLIST_ITEM':
+      return {
+        ...state,
+        checklistItems: state.checklistItems.filter(item => item.id !== action.payload)
+      };
     case 'RESET':
       return initialState;
     default:
