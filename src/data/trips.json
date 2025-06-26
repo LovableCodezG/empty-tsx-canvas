@@ -1,0 +1,171 @@
+
+{
+  "trips": [
+    {
+      "id": "romantic-paris-getaway",
+      "slug": "romantic-paris-getaway",
+      "title": "Romantic Paris Getaway",
+      "country": "France",
+      "isInternational": true,
+      "category": "romance",
+      "duration": "5 days",
+      "price": 1299,
+      "rating": 4.8,
+      "reviewCount": 142,
+      "image": "https://images.unsplash.com/photo-1502602898536-47ad22581b52?w=500&q=80",
+      "highlights": ["Eiffel Tower", "Louvre Museum", "Seine River Cruise", "Montmartre"],
+      "description": "Experience the magic of Paris with visits to iconic landmarks and romantic spots.",
+      "maxGroupSize": 12,
+      "detailedDescription": "Fall in love with the City of Light on this carefully crafted romantic getaway. From intimate dinners along the Seine to private tours of world-famous museums, every moment is designed to create lasting memories.",
+      "inclusions": ["4-star hotel accommodation", "Daily breakfast", "Seine river cruise", "Museum passes", "Professional guide"],
+      "exclusions": ["International flights", "Lunch and dinner", "Personal expenses", "Travel insurance"],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Arrival & Montmartre",
+          "activities": ["Airport transfer", "Check-in at hotel", "Montmartre district tour", "Sacré-Cœur visit"]
+        },
+        {
+          "day": 2,
+          "title": "Classic Paris",
+          "activities": ["Eiffel Tower visit", "Louvre Museum", "Seine river cruise", "Romantic dinner"]
+        }
+      ]
+    },
+    {
+      "id": "tokyo-culture-cuisine",
+      "slug": "tokyo-culture-cuisine",
+      "title": "Tokyo Culture & Cuisine",
+      "country": "Japan",
+      "isInternational": true,
+      "category": "culture",
+      "duration": "7 days",
+      "price": 1899,
+      "rating": 4.9,
+      "reviewCount": 98,
+      "image": "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=500&q=80",
+      "highlights": ["Shibuya Crossing", "Traditional Temples", "Sushi Making", "Mount Fuji"],
+      "description": "Immerse yourself in Japanese culture, from ancient traditions to modern marvels.",
+      "maxGroupSize": 8,
+      "detailedDescription": "Discover the perfect blend of ancient traditions and cutting-edge modernity in Japan's vibrant capital. From traditional tea ceremonies to bustling markets, experience the true essence of Japanese culture.",
+      "inclusions": ["Boutique hotel accommodation", "Daily breakfast", "Sushi making class", "Temple tours", "English-speaking guide"],
+      "exclusions": ["International flights", "Lunch and dinner", "Personal expenses", "Visa fees"],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Tokyo Arrival",
+          "activities": ["Airport transfer", "Hotel check-in", "Shibuya district exploration"]
+        },
+        {
+          "day": 2,
+          "title": "Traditional Tokyo",
+          "activities": ["Senso-ji Temple", "Traditional tea ceremony", "Imperial Palace gardens"]
+        }
+      ]
+    },
+    {
+      "id": "california-wine-country",
+      "slug": "california-wine-country",
+      "title": "California Wine Country",
+      "country": "United States",
+      "isInternational": false,
+      "category": "wine",
+      "duration": "4 days",
+      "price": 899,
+      "rating": 4.7,
+      "reviewCount": 156,
+      "image": "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=500&q=80",
+      "highlights": ["Napa Valley", "Wine Tastings", "Vineyard Tours", "Gourmet Dining"],
+      "description": "Explore California's premier wine region with tastings and vineyard tours.",
+      "maxGroupSize": 12,
+      "detailedDescription": "Journey through California's world-renowned wine country, where rolling hills covered in vineyards create the perfect backdrop for wine tastings and culinary experiences.",
+      "inclusions": ["Luxury inn accommodation", "Daily breakfast", "Wine tastings", "Vineyard tours", "Welcome dinner"],
+      "exclusions": ["Domestic flights", "Lunch", "Personal expenses", "Additional wine purchases"],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Napa Valley Introduction",
+          "activities": ["Arrival in Napa", "First vineyard visit", "Welcome dinner"]
+        }
+      ]
+    },
+    {
+      "id": "swiss-alps-adventure",
+      "slug": "swiss-alps-adventure",
+      "title": "Swiss Alps Adventure",
+      "country": "Switzerland",
+      "isInternational": true,
+      "category": "adventure",
+      "duration": "8 days",
+      "price": 2299,
+      "rating": 4.9,
+      "reviewCount": 87,
+      "image": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&q=80",
+      "highlights": ["Matterhorn", "Hiking Trails", "Mountain Railways", "Alpine Villages"],
+      "description": "Conquer the Swiss Alps with breathtaking mountain views and challenging hikes.",
+      "maxGroupSize": 10,
+      "detailedDescription": "Experience the majesty of the Swiss Alps on this adventure-packed journey through some of Europe's most spectacular mountain landscapes.",
+      "inclusions": ["Mountain lodge accommodation", "All meals", "Professional guide", "Equipment rental", "Mountain railway passes"],
+      "exclusions": ["International flights", "Personal gear", "Travel insurance", "Gratuities"],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Arrival in Zermatt",
+          "activities": ["Train to Zermatt", "Hotel check-in", "Village orientation"]
+        }
+      ]
+    },
+    {
+      "id": "grand-canyon-exploration",
+      "slug": "grand-canyon-exploration",
+      "title": "Grand Canyon Exploration",
+      "country": "United States",
+      "isInternational": false,
+      "category": "nature",
+      "duration": "3 days",
+      "price": 599,
+      "rating": 4.6,
+      "reviewCount": 203,
+      "image": "https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?w=500&q=80",
+      "highlights": ["South Rim Views", "Hiking Trails", "Sunset Points", "Desert Wildlife"],
+      "description": "Discover one of America's most iconic natural wonders with guided hikes and scenic viewpoints.",
+      "maxGroupSize": 15,
+      "detailedDescription": "Stand in awe at the edge of one of the world's most spectacular natural formations. This carefully planned exploration offers the best viewpoints and hiking experiences.",
+      "inclusions": ["Lodge accommodation", "All meals", "Park entrance fees", "Professional guide", "Transportation"],
+      "exclusions": ["Domestic flights", "Personal expenses", "Optional helicopter tour", "Hiking gear rental"],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "South Rim Discovery",
+          "activities": ["Arrival at Grand Canyon", "South Rim trail hike", "Sunset viewing"]
+        }
+      ]
+    },
+    {
+      "id": "iceland-northern-lights",
+      "slug": "iceland-northern-lights",
+      "title": "Iceland Northern Lights",
+      "country": "Iceland",
+      "isInternational": true,
+      "category": "nature",
+      "duration": "6 days",
+      "price": 1799,
+      "rating": 4.6,
+      "reviewCount": 124,
+      "image": "https://images.unsplash.com/photo-1539066309609-dd4bb3cb9305?w=500&q=80",
+      "highlights": ["Northern Lights", "Blue Lagoon", "Waterfalls", "Glacier Tours"],
+      "description": "Witness the magical Aurora Borealis and explore Iceland's dramatic landscapes.",
+      "maxGroupSize": 16,
+      "detailedDescription": "Experience the natural wonder of the Northern Lights while exploring Iceland's otherworldly landscapes of glaciers, geysers, and volcanic formations.",
+      "inclusions": ["4-star hotel accommodation", "Daily breakfast", "Blue Lagoon entry", "Northern Lights tours", "Professional guide"],
+      "exclusions": ["International flights", "Lunch and dinner", "Optional tours", "Winter clothing rental"],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Reykjavik Arrival",
+          "activities": ["Airport transfer", "City tour", "Northern Lights briefing"]
+        }
+      ]
+    }
+  ]
+}

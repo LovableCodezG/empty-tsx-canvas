@@ -1,18 +1,36 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Search, Filter, MapPin, Star, Clock, Users } from "lucide-react";
+import { Search, MapPin } from "lucide-react";
 import { Tiles } from "@/components/ui/tiles";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import PremadeTripCard from "@/components/trips/PremadeTripCard";
+import tripsData from "@/data/trips.json";
 
-interface PremadeTrip {
+// Backend Integration Comments:
+// 1. Replace tripsData import with API call to fetch trips
+// 2. Add pagination support for large datasets
+// 3. Implement search functionality with backend filtering
+// 4. Add sorting options (price, rating, duration)
+// 5. Cache trip data for better performance
+// 6. Implement user favorites/wishlist functionality
+// 7. Add analytics tracking for trip views and interactions
+
+// Ideal API Endpoints:
+// GET /api/trips?page=1&limit=12&search=&location=&category=
+// GET /api/trips/featured
+// POST /api/trips/:id/favorite
+// GET /api/trips/:id/related
+
+interface Trip {
   id: string;
+  slug: string;
   title: string;
   country: string;
+  isInternational: boolean;
+  category: string;
   duration: string;
-  difficulty: "Easy" | "Moderate" | "Challenging";
   price: number;
   rating: number;
   reviewCount: number;
@@ -22,102 +40,23 @@ interface PremadeTrip {
   maxGroupSize: number;
 }
 
-const premadeTrips: PremadeTrip[] = [
-  {
-    id: "1",
-    title: "Romantic Paris Getaway",
-    country: "France",
-    duration: "5 days",
-    difficulty: "Easy",
-    price: 1299,
-    rating: 4.8,
-    reviewCount: 142,
-    image: "https://images.unsplash.com/photo-1502602898536-47ad22581b52?w=500&q=80",
-    highlights: ["Eiffel Tower", "Louvre Museum", "Seine River Cruise", "Montmartre"],
-    description: "Experience the magic of Paris with visits to iconic landmarks and romantic spots.",
-    maxGroupSize: 12
-  },
-  {
-    id: "2",
-    title: "Tokyo Culture & Cuisine",
-    country: "Japan",
-    duration: "7 days",
-    difficulty: "Moderate",
-    price: 1899,
-    rating: 4.9,
-    reviewCount: 98,
-    image: "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=500&q=80",
-    highlights: ["Shibuya Crossing", "Traditional Temples", "Sushi Making", "Mount Fuji"],
-    description: "Immerse yourself in Japanese culture, from ancient traditions to modern marvels.",
-    maxGroupSize: 8
-  },
-  {
-    id: "3",
-    title: "Bali Island Paradise",
-    country: "Indonesia",
-    duration: "6 days",
-    difficulty: "Easy",
-    price: 999,
-    rating: 4.7,
-    reviewCount: 203,
-    image: "https://images.unsplash.com/photo-1537953773345-d172ccf13cf1?w=500&q=80",
-    highlights: ["Rice Terraces", "Beach Clubs", "Temple Visits", "Yoga Sessions"],
-    description: "Relax in tropical paradise with stunning beaches, temples, and wellness experiences.",
-    maxGroupSize: 15
-  },
-  {
-    id: "4",
-    title: "Swiss Alps Adventure",
-    country: "Switzerland",
-    duration: "8 days",
-    difficulty: "Challenging",
-    price: 2299,
-    rating: 4.9,
-    reviewCount: 87,
-    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&q=80",
-    highlights: ["Matterhorn", "Hiking Trails", "Mountain Railways", "Alpine Villages"],
-    description: "Conquer the Swiss Alps with breathtaking mountain views and challenging hikes.",
-    maxGroupSize: 10
-  },
-  {
-    id: "5",
-    title: "Tuscan Wine Country",
-    country: "Italy",
-    duration: "5 days",
-    difficulty: "Easy",
-    price: 1599,
-    rating: 4.8,
-    reviewCount: 156,
-    image: "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=500&q=80",
-    highlights: ["Wine Tastings", "Historic Towns", "Cooking Classes", "Vineyard Tours"],
-    description: "Savor the flavors of Tuscany with wine tastings and culinary experiences.",
-    maxGroupSize: 12
-  },
-  {
-    id: "6",
-    title: "Iceland Northern Lights",
-    country: "Iceland",
-    duration: "6 days",
-    difficulty: "Moderate",
-    price: 1799,
-    rating: 4.6,
-    reviewCount: 124,
-    image: "https://images.unsplash.com/photo-1539066309609-dd4bb3cb9305?w=500&q=80",
-    highlights: ["Northern Lights", "Blue Lagoon", "Waterfalls", "Glacier Tours"],
-    description: "Witness the magical Aurora Borealis and explore Iceland's dramatic landscapes.",
-    maxGroupSize: 16
-  }
-];
-
 const TripsContent = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedDifficulty, setSelectedDifficulty] = useState<string>("All");
+  const [selectedLocation, setSelectedLocation] = useState<string>("All");
 
-  const filteredTrips = premadeTrips.filter(trip => {
+  // Backend TODO: Replace with API call
+  const trips: Trip[] = tripsData.trips;
+
+  const filteredTrips = trips.filter(trip => {
     const matchesSearch = trip.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         trip.country.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDifficulty = selectedDifficulty === "All" || trip.difficulty === selectedDifficulty;
-    return matchesSearch && matchesDifficulty;
+                         trip.country.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         trip.category.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesLocation = selectedLocation === "All" || 
+                           (selectedLocation === "Domestic" && !trip.isInternational) ||
+                           (selectedLocation === "International" && trip.isInternational);
+    
+    return matchesSearch && matchesLocation;
   });
 
   return (
@@ -156,25 +95,37 @@ const TripsContent = () => {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
-                placeholder="Search trips or destinations..."
+                placeholder="Search trips, destinations, or categories..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
               />
             </div>
             <div className="flex gap-2">
-              {["All", "Easy", "Moderate", "Challenging"].map((difficulty) => (
+              {["All", "Domestic", "International"].map((location) => (
                 <Button
-                  key={difficulty}
-                  variant={selectedDifficulty === difficulty ? "default" : "outline"}
+                  key={location}
+                  variant={selectedLocation === location ? "default" : "outline"}
                   size="sm"
-                  onClick={() => setSelectedDifficulty(difficulty)}
+                  onClick={() => setSelectedLocation(location)}
                   className="whitespace-nowrap"
                 >
-                  {difficulty}
+                  {location}
                 </Button>
               ))}
             </div>
+          </motion.div>
+
+          {/* Results Count */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="mb-6"
+          >
+            <p className="text-sm text-gray-600">
+              {filteredTrips.length} trip{filteredTrips.length !== 1 ? 's' : ''} found
+            </p>
           </motion.div>
 
           {/* Trips Grid */}

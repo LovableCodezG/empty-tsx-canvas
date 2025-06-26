@@ -5,13 +5,24 @@ import { Star, Clock, Users, MapPin, Heart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
+
+// Backend Integration Comments:
+// 1. Add favorite/wishlist functionality with user authentication
+// 2. Track trip view analytics when "See More" is clicked
+// 3. Implement real-time pricing updates
+// 4. Add availability checking
+// 5. Store user interaction data for recommendations
+// 6. Add image lazy loading and optimization
 
 interface PremadeTrip {
   id: string;
+  slug: string;
   title: string;
   country: string;
+  isInternational: boolean;
+  category: string;
   duration: string;
-  difficulty: "Easy" | "Moderate" | "Challenging";
   price: number;
   rating: number;
   reviewCount: number;
@@ -26,17 +37,26 @@ interface PremadeTripCardProps {
 }
 
 const PremadeTripCard = ({ trip }: PremadeTripCardProps) => {
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case "Easy":
-        return "bg-green-100 text-green-800";
-      case "Moderate":
-        return "bg-yellow-100 text-yellow-800";
-      case "Challenging":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
+  const navigate = useNavigate();
+
+  const getLocationBadgeColor = (isInternational: boolean) => {
+    return isInternational 
+      ? "bg-blue-100 text-blue-800" 
+      : "bg-green-100 text-green-800";
+  };
+
+  const handleSeeMore = () => {
+    // Backend TODO: Track trip view analytics
+    // Analytics.track('trip_viewed', { tripId: trip.id, tripSlug: trip.slug });
+    
+    navigate(`/trips/${trip.slug}`);
+  };
+
+  const handleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // Backend TODO: Add to user favorites
+    // FavoritesService.toggle(trip.id);
+    console.log(`Added ${trip.title} to favorites`);
   };
 
   return (
@@ -55,10 +75,10 @@ const PremadeTripCard = ({ trip }: PremadeTripCardProps) => {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
           
-          {/* Difficulty Badge */}
+          {/* Location Badge */}
           <div className="absolute top-3 left-3">
-            <Badge className={`${getDifficultyColor(trip.difficulty)} border-0`}>
-              {trip.difficulty}
+            <Badge className={`${getLocationBadgeColor(trip.isInternational)} border-0`}>
+              {trip.isInternational ? 'International' : 'Domestic'}
             </Badge>
           </div>
 
@@ -67,6 +87,7 @@ const PremadeTripCard = ({ trip }: PremadeTripCardProps) => {
             <Button
               variant="ghost"
               size="icon"
+              onClick={handleFavorite}
               className="h-8 w-8 bg-white/80 hover:bg-white text-gray-700 backdrop-blur-sm"
             >
               <Heart className="h-4 w-4" />
@@ -130,7 +151,10 @@ const PremadeTripCard = ({ trip }: PremadeTripCardProps) => {
           </div>
 
           {/* See More Button */}
-          <Button className="w-full bg-spot-primary hover:bg-spot-primary/90">
+          <Button 
+            onClick={handleSeeMore}
+            className="w-full bg-spot-primary hover:bg-spot-primary/90"
+          >
             See More
           </Button>
         </CardContent>
