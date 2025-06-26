@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Star, Clock, Users, MapPin, Check, X } from "lucide-react";
@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { useTripCreation } from "@/contexts/TripCreationContext";
+import QuickTripSetupModal, { TripSetupData } from "@/components/trips/QuickTripSetupModal";
 import tripsData from "@/data/trips.json";
 
 // Backend Integration Comments:
@@ -19,10 +21,14 @@ import tripsData from "@/data/trips.json";
 // 7. Implement real-time cost estimation tools
 // 8. Add image gallery with lightbox
 // 9. Store user trip planning sessions and favorites
+// 10. Track "Start Planning" conversion rates
+// 11. Add premade trip template analytics
 
 const TripDetailPage = () => {
   const { tripId } = useParams<{ tripId: string }>();
   const navigate = useNavigate();
+  const { dispatch } = useTripCreation();
+  const [showSetupModal, setShowSetupModal] = useState(false);
 
   // Backend TODO: Replace with API call
   const trip = tripsData.trips.find(t => t.slug === tripId);
@@ -40,10 +46,87 @@ const TripDetailPage = () => {
     );
   }
 
+  const convertItineraryToSchedule = (itinerary: any[]) => {
+    const scheduleActivities: Record<number, any[]> = {};
+    
+    itinerary.forEach((dayData, dayIndex) => {
+      const activities = dayData.activities.map((activity: string, actIndex: number) => ({
+        id: `${dayIndex}-${actIndex}`,
+        name: activity,
+        startTime: `${9 + actIndex * 2}:00`, // Spread activities throughout the day
+        duration: 120, // 2 hours default
+        category: actIndex === 0 ? 'transportation' : 
+                 actIndex === dayData.activities.length - 1 ? 'meal' : 'sightseeing',
+        notes: `Part of ${dayData.title}`,
+        colorIndex: dayIndex % 5
+      }));
+      
+      scheduleActivities[dayIndex] = activities;
+    });
+    
+    return scheduleActivities;
+  };
+
   const handleStartPlanning = () => {
-    // Backend TODO: Implement trip planning flow
-    // PlanningService.initiate(trip.id);
-    console.log(`Planning started for ${trip.title}`);
+    setShowSetupModal(true);
+  };
+
+  const handleSetupConfirm = (setupData: TripSetupData) => {
+    console.log('Trip setup data:', setupData);
+    
+    // Pre-populate trip creation context with premade trip data
+    dispatch({ type: 'RESET' });
+    
+    // Set basic trip information
+    dispatch({ type: 'SET_TRIP_TYPE', payload: setupData.tripType });
+    dispatch({ type: 'SET_DESTINATION_TYPE', payload: trip.isInternational ? 'international' : 'domestic' });
+    dispatch({ type: 'SET_SELECTED_COUNTRY', payload: trip.country });
+    dispatch({ type: 'SET_TRIP_NAME', payload: trip.title });
+    dispatch({ type: 'SET_GROUP_SIZE', payload: setupData.groupSize });
+    
+    // Set dates if provided
+    if (setupData.dateRange?.from && setupData.dateRange?.to) {
+      dispatch({ 
+        type: 'SET_TRIP_DATES', 
+        payload: { 
+          dateType: 'range',
+          startDate: setupData.dateRange.from,
+          endDate: setupData.dateRange.to,
+          dateRange: setupData.dateRange
+        }
+      });
+    }
+    
+    // Convert and set schedule activities from itinerary
+    if (trip.itinerary) {
+      const scheduleActivities = convertItineraryToSchedule(trip.itinerary);
+      dispatch({ type: 'SET_SCHEDULE_ACTIVITIES', payload: scheduleActivities });
+    }
+    
+    // Set estimated costs based on trip price
+    const estimatedBudget = trip.price * setupData.groupSize;
+    if (setupData.tripType === 'group') {
+      dispatch({ type: 'SET_GROUP_BUDGET_PER_HEAD', payload: trip.price });
+    } else {
+      dispatch({ type: 'SET_USER_BUDGET', payload: trip.price });
+    }
+    
+    // Estimate breakdown costs (rough estimates)
+    const dailyRate = trip.price / parseInt(trip.duration);
+    dispatch({ type: 'SET_HOTEL_PER_NIGHT', payload: Math.round(dailyRate * 0.4) }); // 40% for accommodation
+    dispatch({ type: 'SET_ACTIVITIES_COST', payload: Math.round(dailyRate * 0.3) }); // 30% for activities
+    
+    if (trip.isInternational) {
+      dispatch({ type: 'SET_FLIGHT_COST', payload: Math.round(trip.price * 0.3) }); // 30% for flights
+    }
+    
+    // Backend TODO: Save premade trip template selection
+    // TripTemplateService.trackSelection(trip.id, setupData);
+    
+    setShowSetupModal(false);
+    
+    // Navigate directly to schedule page with pre-populated data
+    navigate('/create-trip/schedule');
   };
 
   return (
@@ -181,7 +264,7 @@ const TripDetailPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card>
                   <CardContent className="p-6">
-                    <h3 className="text-xl font-bold mb-4 text-green-700">Typically Includes</h3>
+                    <h3 className="text-xl font-bold mb-4 text-green-700">What's Included</h3>
                     <div className="space-y-2">
                       {trip.inclusions.map((item, index) => (
                         <div key={index} className="flex items-center">
@@ -268,6 +351,21 @@ const TripDetailPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Quick Trip Setup Modal */}
+      <QuickTripSetupModal
+        isOpen={showSetupModal}
+        onClose={() => setShowSetupModal(false)}
+        onConfirm={handleSetupConfirm}
+        trip={{
+          title: trip.title,
+          duration: trip.duration,
+          country: trip.country,
+          isInternational: trip.isInternational,
+          price: trip.price,
+          maxGroupSize: trip.maxGroupSize
+        }}
+      />
     </div>
   );
 };
