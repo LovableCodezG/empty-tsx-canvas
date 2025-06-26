@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTripCreation } from '@/contexts/TripCreationContext';
@@ -12,7 +11,11 @@ import TripChecklistSection from '@/components/trip-creation/overview/TripCheckl
 import GroupMembersSection from '@/components/trip-creation/overview/GroupMembersSection';
 import ShareTripSection from '@/components/trip-creation/overview/ShareTripSection';
 
-const CreateTripOverviewPage = () => {
+interface CreateTripOverviewPageProps {
+  viewMode?: boolean;
+}
+
+const CreateTripOverviewPage = ({ viewMode = false }: CreateTripOverviewPageProps) => {
   const { state, dispatch } = useTripCreation();
   const navigate = useNavigate();
   const shareRef = useRef<HTMLDivElement>(null);
@@ -50,10 +53,21 @@ const CreateTripOverviewPage = () => {
   };
 
   const handleEditClick = () => {
-    navigate('/create-trip/destination');
+    if (viewMode) {
+      // In view mode, go back to dashboard
+      navigate('/dashboard');
+    } else {
+      navigate('/create-trip/destination');
+    }
   };
 
   const handleFinishClick = () => {
+    if (viewMode) {
+      // In view mode, go back to dashboard
+      navigate('/dashboard');
+      return;
+    }
+
     // Validate trip name is provided
     if (!state.tripName.trim()) {
       // Focus on trip name input
@@ -115,7 +129,7 @@ const CreateTripOverviewPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <TripCreationCloseButton />
+      {!viewMode && <TripCreationCloseButton />}
       
       <div className="container mx-auto px-6 py-8">
         <OverviewHeader
@@ -123,13 +137,14 @@ const CreateTripOverviewPage = () => {
           onEditClick={handleEditClick}
           onFinishClick={handleFinishClick}
           canFinish={canFinish}
+          viewMode={viewMode}
         />
         
         <div className="max-w-4xl mx-auto space-y-8">
-          <TripNameSection />
+          <TripNameSection viewMode={viewMode} />
           <TripItinerarySection />
           <CostSummarySection />
-          <TripChecklistSection />
+          <TripChecklistSection viewMode={viewMode} />
           <GroupMembersSection />
           <div ref={shareRef}>
             <ShareTripSection />

@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -23,6 +22,7 @@ import CreateTripTransportPage from "./pages/CreateTripTransportPage";
 import CreateTripExpensePage from "./pages/CreateTripExpensePage";
 import CreateTripOverviewPage from "./pages/CreateTripOverviewPage";
 import NotFound from "./pages/NotFound";
+import TripOverviewViewPage from "./pages/TripOverviewViewPage";
 
 const queryClient = new QueryClient();
 
@@ -40,6 +40,7 @@ const App: React.FC = () => {
             <Route path="/trips" element={<TripsPage />} />
             <Route path="/trips/:tripId" element={<TripDetailPage />} />
             <Route path="/my-trips/:tripId" element={<MyTripDetailPage />} />
+            <Route path="/trip-overview/:tripId" element={<TripOverviewViewPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/create-trip/*" element={
               <TripCreationProvider>

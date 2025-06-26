@@ -1,4 +1,3 @@
-
 import React from "react";
 import { motion } from "framer-motion";
 import { Calendar, MapPin, Users, MoreVertical, Edit, Eye, Trash2 } from "lucide-react";
@@ -57,7 +56,7 @@ const TripCard = ({ trip }: TripCardProps) => {
 
   const handleViewItinerary = (e: React.MouseEvent) => {
     e.stopPropagation();
-    navigate(`/my-trips/${trip.id}`);
+    navigate(`/trip-overview/${trip.id}`);
   };
 
   const handleEditTrip = (e: React.MouseEvent) => {

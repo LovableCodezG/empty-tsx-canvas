@@ -4,13 +4,20 @@ import { motion } from 'framer-motion';
 import { useTripCreation } from '@/contexts/TripCreationContext';
 import { AnimatedTooltip } from '@/components/ui/animated-tooltip';
 import { Button } from '@/components/ui/button';
-import { Share, Edit, CheckCircle } from 'lucide-react';
+import { Share, Edit, CheckCircle, ArrowLeft } from 'lucide-react';
 
-const OverviewHeader = ({ onShareClick, onEditClick, onFinishClick, canFinish = true }: {
+const OverviewHeader = ({ 
+  onShareClick, 
+  onEditClick, 
+  onFinishClick, 
+  canFinish = true,
+  viewMode = false 
+}: {
   onShareClick: () => void;
   onEditClick: () => void;
   onFinishClick: () => void;
   canFinish?: boolean;
+  viewMode?: boolean;
 }) => {
   const { state } = useTripCreation();
 
@@ -31,10 +38,13 @@ const OverviewHeader = ({ onShareClick, onEditClick, onFinishClick, canFinish = 
       className="text-center mb-8"
     >
       <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-        Your Trip is Ready!
+        {viewMode ? 'Trip Overview' : 'Your Trip is Ready!'}
       </h1>
       <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
-        Here's a complete summary of your trip. Review, adjust, or share before you go!
+        {viewMode 
+          ? 'Here\'s your complete trip itinerary and details.'
+          : 'Here\'s a complete summary of your trip. Review, adjust, or share before you go!'
+        }
       </p>
 
       {/* Group Member Avatars */}
@@ -51,15 +61,17 @@ const OverviewHeader = ({ onShareClick, onEditClick, onFinishClick, canFinish = 
 
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-        <Button
-          id="scroll-to-share-button"
-          variant="outline"
-          onClick={onShareClick}
-          className="flex items-center gap-2"
-        >
-          <Share className="h-4 w-4" />
-          Share Trip
-        </Button>
+        {!viewMode && (
+          <Button
+            id="scroll-to-share-button"
+            variant="outline"
+            onClick={onShareClick}
+            className="flex items-center gap-2"
+          >
+            <Share className="h-4 w-4" />
+            Share Trip
+          </Button>
+        )}
         
         <Button
           id="edit-trip-button"
@@ -67,22 +79,33 @@ const OverviewHeader = ({ onShareClick, onEditClick, onFinishClick, canFinish = 
           onClick={onEditClick}
           className="flex items-center gap-2"
         >
-          <Edit className="h-4 w-4" />
-          Edit Trip
+          {viewMode ? (
+            <>
+              <ArrowLeft className="h-4 w-4" />
+              Back to Dashboard
+            </>
+          ) : (
+            <>
+              <Edit className="h-4 w-4" />
+              Edit Trip
+            </>
+          )}
         </Button>
         
-        <Button
-          id="finish-trip-button"
-          onClick={onFinishClick}
-          disabled={!canFinish}
-          className="flex items-center gap-2 bg-spot-primary hover:bg-spot-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <CheckCircle className="h-4 w-4" />
-          Finish & Go to Dashboard
-        </Button>
+        {!viewMode && (
+          <Button
+            id="finish-trip-button"
+            onClick={onFinishClick}
+            disabled={!canFinish}
+            className="flex items-center gap-2 bg-spot-primary hover:bg-spot-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <CheckCircle className="h-4 w-4" />
+            Finish & Go to Dashboard
+          </Button>
+        )}
       </div>
 
-      {!canFinish && (
+      {!viewMode && !canFinish && (
         <p className="text-sm text-red-600 mt-2">
           Please provide a trip name to continue
         </p>
