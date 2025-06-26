@@ -17,18 +17,33 @@
       "description": "Experience the magic of Paris with visits to iconic landmarks and romantic spots.",
       "maxGroupSize": 12,
       "detailedDescription": "Fall in love with the City of Light on this carefully crafted romantic getaway. From intimate dinners along the Seine to private tours of world-famous museums, every moment is designed to create lasting memories.",
-      "inclusions": ["4-star hotel accommodation", "Daily breakfast", "Seine river cruise", "Museum passes", "Professional guide"],
-      "exclusions": ["International flights", "Lunch and dinner", "Personal expenses", "Travel insurance"],
+      "inclusions": ["Seine river cruise", "Museum passes", "City walking tours"],
+      "exclusions": ["International flights", "Accommodation", "Meals", "Personal expenses", "Travel insurance"],
       "itinerary": [
         {
           "day": 1,
           "title": "Arrival & Montmartre",
-          "activities": ["Airport transfer", "Check-in at hotel", "Montmartre district tour", "Sacré-Cœur visit"]
+          "activities": ["Airport transfer", "Montmartre district tour", "Sacré-Cœur visit", "Welcome dinner"]
         },
         {
           "day": 2,
           "title": "Classic Paris",
-          "activities": ["Eiffel Tower visit", "Louvre Museum", "Seine river cruise", "Romantic dinner"]
+          "activities": ["Breakfast at café", "Eiffel Tower visit", "Louvre Museum", "Seine river cruise", "Romantic dinner"]
+        },
+        {
+          "day": 3,
+          "title": "Art & Culture",
+          "activities": ["Breakfast", "Musée d'Orsay", "Latin Quarter walk", "Notre-Dame area", "Lunch at bistro"]
+        },
+        {
+          "day": 4,
+          "title": "Gardens & Shopping",
+          "activities": ["Breakfast", "Tuileries Gardens", "Champs-Élysées shopping", "Arc de Triomphe", "Farewell dinner"]
+        },
+        {
+          "day": 5,
+          "title": "Departure",
+          "activities": ["Check-out", "Last-minute souvenir shopping", "Airport transfer"]
         }
       ]
     },
@@ -48,18 +63,18 @@
       "description": "Immerse yourself in Japanese culture, from ancient traditions to modern marvels.",
       "maxGroupSize": 8,
       "detailedDescription": "Discover the perfect blend of ancient traditions and cutting-edge modernity in Japan's vibrant capital. From traditional tea ceremonies to bustling markets, experience the true essence of Japanese culture.",
-      "inclusions": ["Boutique hotel accommodation", "Daily breakfast", "Sushi making class", "Temple tours", "English-speaking guide"],
-      "exclusions": ["International flights", "Lunch and dinner", "Personal expenses", "Visa fees"],
+      "inclusions": ["Sushi making class", "Temple tours", "Cultural workshops"],
+      "exclusions": ["International flights", "Accommodation", "Meals", "Personal expenses", "Visa fees"],
       "itinerary": [
         {
           "day": 1,
           "title": "Tokyo Arrival",
-          "activities": ["Airport transfer", "Hotel check-in", "Shibuya district exploration"]
+          "activities": ["Airport transfer", "Shibuya district exploration", "Welcome ramen dinner"]
         },
         {
           "day": 2,
           "title": "Traditional Tokyo",
-          "activities": ["Senso-ji Temple", "Traditional tea ceremony", "Imperial Palace gardens"]
+          "activities": ["Breakfast", "Senso-ji Temple", "Traditional tea ceremony", "Imperial Palace gardens"]
         }
       ]
     },
@@ -79,8 +94,8 @@
       "description": "Explore California's premier wine region with tastings and vineyard tours.",
       "maxGroupSize": 12,
       "detailedDescription": "Journey through California's world-renowned wine country, where rolling hills covered in vineyards create the perfect backdrop for wine tastings and culinary experiences.",
-      "inclusions": ["Luxury inn accommodation", "Daily breakfast", "Wine tastings", "Vineyard tours", "Welcome dinner"],
-      "exclusions": ["Domestic flights", "Lunch", "Personal expenses", "Additional wine purchases"],
+      "inclusions": ["Wine tastings", "Vineyard tours", "Winery transportation"],
+      "exclusions": ["Domestic flights", "Accommodation", "Meals", "Personal expenses", "Additional wine purchases"],
       "itinerary": [
         {
           "day": 1,
@@ -105,13 +120,13 @@
       "description": "Conquer the Swiss Alps with breathtaking mountain views and challenging hikes.",
       "maxGroupSize": 10,
       "detailedDescription": "Experience the majesty of the Swiss Alps on this adventure-packed journey through some of Europe's most spectacular mountain landscapes.",
-      "inclusions": ["Mountain lodge accommodation", "All meals", "Professional guide", "Equipment rental", "Mountain railway passes"],
-      "exclusions": ["International flights", "Personal gear", "Travel insurance", "Gratuities"],
+      "inclusions": ["Equipment rental", "Mountain railway passes", "Guided hiking tours"],
+      "exclusions": ["International flights", "Accommodation", "Meals", "Personal gear", "Travel insurance", "Gratuities"],
       "itinerary": [
         {
           "day": 1,
           "title": "Arrival in Zermatt",
-          "activities": ["Train to Zermatt", "Hotel check-in", "Village orientation"]
+          "activities": ["Train to Zermatt", "Village orientation", "Equipment fitting"]
         }
       ]
     },
@@ -131,8 +146,8 @@
       "description": "Discover one of America's most iconic natural wonders with guided hikes and scenic viewpoints.",
       "maxGroupSize": 15,
       "detailedDescription": "Stand in awe at the edge of one of the world's most spectacular natural formations. This carefully planned exploration offers the best viewpoints and hiking experiences.",
-      "inclusions": ["Lodge accommodation", "All meals", "Park entrance fees", "Professional guide", "Transportation"],
-      "exclusions": ["Domestic flights", "Personal expenses", "Optional helicopter tour", "Hiking gear rental"],
+      "inclusions": ["Park entrance fees", "Guided tours", "Transportation"],
+      "exclusions": ["Domestic flights", "Accommodation", "Meals", "Personal expenses", "Optional helicopter tour", "Hiking gear rental"],
       "itinerary": [
         {
           "day": 1,
@@ -157,8 +172,8 @@
       "description": "Witness the magical Aurora Borealis and explore Iceland's dramatic landscapes.",
       "maxGroupSize": 16,
       "detailedDescription": "Experience the natural wonder of the Northern Lights while exploring Iceland's otherworldly landscapes of glaciers, geysers, and volcanic formations.",
-      "inclusions": ["4-star hotel accommodation", "Daily breakfast", "Blue Lagoon entry", "Northern Lights tours", "Professional guide"],
-      "exclusions": ["International flights", "Lunch and dinner", "Optional tours", "Winter clothing rental"],
+      "inclusions": ["Blue Lagoon entry", "Northern Lights tours", "Glacier tours"],
+      "exclusions": ["International flights", "Accommodation", "Meals", "Optional tours", "Winter clothing rental"],
       "itinerary": [
         {
           "day": 1,
