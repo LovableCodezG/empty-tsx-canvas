@@ -2,9 +2,12 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Calendar, MapPin, Users, MoreVertical, Edit, Eye, Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useToast } from "@/hooks/use-toast";
+import { deleteTrip } from "@/utils/tripStorage";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,6 +35,9 @@ interface TripCardProps {
 }
 
 const TripCard = ({ trip }: TripCardProps) => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Upcoming":
@@ -45,12 +51,44 @@ const TripCard = ({ trip }: TripCardProps) => {
     }
   };
 
+  const handleCardClick = () => {
+    navigate(`/my-trips/${trip.id}`);
+  };
+
+  const handleViewItinerary = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigate(`/my-trips/${trip.id}`);
+  };
+
+  const handleEditTrip = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    // TODO: Navigate to trip editing page
+    toast({
+      title: "Edit feature coming soon",
+      description: "Trip editing functionality will be available soon!",
+    });
+  };
+
+  const handleDeleteTrip = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (window.confirm('Are you sure you want to delete this trip? This action cannot be undone.')) {
+      deleteTrip(trip.id);
+      toast({
+        title: "Trip deleted",
+        description: "The trip has been removed from your dashboard.",
+      });
+      // Refresh the page to update the trip list
+      window.location.reload();
+    }
+  };
+
   return (
     <motion.div
       whileHover={{ y: -4, scale: 1.02 }}
       transition={{ duration: 0.2 }}
-      className="trip-card"
+      className="trip-card cursor-pointer"
       data-trip-id={trip.id}
+      onClick={handleCardClick}
     >
       <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 border-0 bg-white rounded-xl">
         {/* Trip Image - Reduced height */}
@@ -77,20 +115,21 @@ const TripCard = ({ trip }: TripCardProps) => {
                   variant="ghost"
                   size="icon"
                   className="h-8 w-8 bg-white/80 hover:bg-white text-gray-700 backdrop-blur-sm"
+                  onClick={(e) => e.stopPropagation()}
                 >
                   <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="bg-white border border-gray-200 shadow-lg">
-                <DropdownMenuItem className="hover:bg-gray-50">
+                <DropdownMenuItem className="hover:bg-gray-50" onClick={handleViewItinerary}>
                   <Eye className="h-4 w-4 mr-2" />
                   View Itinerary
                 </DropdownMenuItem>
-                <DropdownMenuItem className="hover:bg-gray-50">
+                <DropdownMenuItem className="hover:bg-gray-50" onClick={handleEditTrip}>
                   <Edit className="h-4 w-4 mr-2" />
                   Edit Trip
                 </DropdownMenuItem>
-                <DropdownMenuItem className="hover:bg-red-50 text-red-600">
+                <DropdownMenuItem className="hover:bg-red-50 text-red-600" onClick={handleDeleteTrip}>
                   <Trash2 className="h-4 w-4 mr-2" />
                   Delete Trip
                 </DropdownMenuItem>

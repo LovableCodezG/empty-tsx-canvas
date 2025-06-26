@@ -15,6 +15,7 @@ import SignupPage from "./pages/SignupPage";
 import DashboardPage from "./pages/DashboardPage";
 import TripsPage from "./pages/TripsPage";
 import TripDetailPage from "./pages/TripDetailPage";
+import MyTripDetailPage from "./pages/MyTripDetailPage";
 import ProfilePage from "./pages/ProfilePage";
 import CreateTripDestinationPage from "./pages/CreateTripDestinationPage";
 import CreateTripSchedulePage from "./pages/CreateTripSchedulePage";
@@ -38,6 +39,7 @@ const App: React.FC = () => {
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/trips" element={<TripsPage />} />
             <Route path="/trips/:tripId" element={<TripDetailPage />} />
+            <Route path="/my-trips/:tripId" element={<MyTripDetailPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/create-trip/*" element={
               <TripCreationProvider>
